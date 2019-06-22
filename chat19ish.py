@@ -1,6 +1,6 @@
 import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod
 #TODO: Make a module that massages the library names -> Tacked this into titlecaseMod
-#TODO: Add 'no email' plea to clipboard _after_ initial greeting
+#TODO: Add 'no email' plea to clipboard _after_ initial greeting (and, not for MD chats!)
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
@@ -82,7 +82,7 @@ def main():
             if 'UK' in words :
                 time = '' 
         if words[0] == 'Patron:' :
-            if patname == 'friend':
+            if patname == 'friend' and words[1] != 'anonymous':
                 patname = words[1]
                 patname = patname.capitalize()
             patmail = words[-1]
@@ -115,10 +115,12 @@ def main():
             patlibraryX = titlecase(patlibraryX)
     patlibraryX = patlibraryX.lstrip()
     addAsk = emailask()
-    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer + addAsk)
+    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
     print(greeting)
+    if addAsk != '' :
+        pyperclip.copy(addAsk)
 if __name__ == "__main__":
     main()
