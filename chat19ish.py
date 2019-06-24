@@ -1,6 +1,9 @@
 import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod
 #TODO: Make a module that massages the library names -> Tacked this into titlecaseMod
-#TODO: Add 'no email' plea to clipboard _after_ initial greeting (and, not for MD chats!)
+#DONE: Added 'no email' plea to clipboard _after_ initial greeting (and, not for MD chats!)
+#NEED AN EASY WAY TO REWRITE pickup() AND pasteGreeting() COORDINATES ON THE FLY BY JUST CLICKING:
+#CAN pyautogui ALTER VARIABLES USING CURSOR POSITION & TRIPLECLICKS? AND CAN main() BE KICKED OFF
+#BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
@@ -13,7 +16,7 @@ def main():
     gatewayURL = 'placehold'
     quest = 0
     prefgreeting = ''
-    time = ' this evening'
+    time = ' today'
     offer = 'I\'ll try to help you with that!'
             
     def pickup() :
@@ -75,9 +78,12 @@ def main():
     for lines in reversed(mylist):
         words = lines.split()
         if len(words) == 0 : continue
-        if  words[0] == 'Close' : return    #stops script upon 'Already p/u' message
+        if  words[0] == 'Close' : 
+            pyautogui.moveTo(870, 210) #Closes the 'Already p/u' dialog 
+            pyautogui.click()
+            return    #stops script upon 'Already p/u' message
         if words[0] == 'Name:' :
-            patname = words[1]  #KICK IN TO A DIFFT FUNCTION!
+            patname = words[1]  #KICK IN TO A DIFFT FUNCTION!  
         if words[0] == 'Queue:' :
             if 'UK' in words :
                 time = '' 
@@ -100,13 +106,15 @@ def main():
     if patmail == 'rovided' : patmail = 'They gave us no address'
     patlibraryX = '' 
     for kotoba in patlibrary:
-        brack = ['(']
-        if brack[0] in kotoba :
+        brack = '('
+        if brack in kotoba :
             indx = patlibrary.index(kotoba)
-            patlibraryX = patlibrary[ :indx ]
+            print(indx)
+            patlibraryX = patlibrary[ : indx ]
             patlibraryX = ' '.join(patlibraryX)
             patlibraryX = str(patlibraryX)
             patlibraryX = titlecase(patlibraryX)
+            break
       #  brack = ['(',')']
       #  if brack[0] in kotoba or brack[1] in kotoba  :
        #     kotoba = ''
