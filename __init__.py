@@ -82,34 +82,39 @@ def titlecase(text, callback=None, small_first_last=True):
         words = re.split('[\t ]', line)
         tc_line = []
         for word in words:
-        #    if word.isupper() and len(word) > 2:
-         #       word = lower(word)
-            if word == 'COL' or word == 'COLL' or word == 'COLL.' or word == 'Col' or word == 'Coll' or word == 'Coll.' :
+            #if word.isupper() and len(word) > 2:
+            if len(word) > 2: 
+                word = word.lower()
+            if word == 'col' or word == 'coll' or word == 'coll,' or word == 'coll.' or word == 'col.' or word == 'col,' :
                 word = 'College'
-            if word == 'Commun' or word == 'COMMUN':
-                word = 'Community'
-            if word == 'HARBOR':
-                word = 'Harbor'
-            if word == 'CITY':
-                word = 'City'
-            if word == 'ANGELES':
-                word = 'Angeles'
-            if word == 'STANISL':
-                word = 'Stanislaus'
-            if word == 'LOS':
-                word = 'Los'
-            if word == 'LIBR':
-                word = 'Library'
-            if word == 'CALIF' or word == 'CALIFORNIA':
-                word = 'California'
-            if word == 'WASH' or word == 'WASHINGTON':
-                word = 'Washington'
-            if word == 'CNTY' or word == 'Cnty':
-                word = 'County'
-            if word == 'PUB':
-                word = 'Public'
-            if word == 'UNIV' or word == 'Univ':
+            if word == 'univ,' or word == 'univ':
                 word = 'University'
+            if word == 'commun' :
+                word = 'Community'
+            if word == 'harbor':
+                word = 'Harbor'
+            if word == 'city':
+                word = 'City'
+            if word == 'angeles':
+                word = 'Angeles'
+            if word == 'stanisl':
+                word = 'Stanislaus'
+            if word == 'los':
+                word = 'Los'
+            if word == 'libr' or word == 'lib':
+                word = 'Library'
+            if word == 'calif' or word == 'california':
+                word = 'California'
+            if word == 'wash' or word == 'washington':
+                word = 'Washington'
+            if word == 'cnty' :
+                word = 'County'
+            if word == 'mem' :
+                word = 'Memorial'
+            if word == 'sys' :
+                word = 'System'
+            if word == 'pub' or word == 'publ':
+                word = 'Public'
             if callback:
                 new_word = callback(word, all_caps=all_caps)
                 if new_word:

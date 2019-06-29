@@ -16,8 +16,8 @@ def main():
     gatewayURL = 'placehold'
     quest = 0
     prefgreeting = ''
-    time = ' today'
-    offer = 'I\'ll try to help you with that!'
+    time = ' this evening'
+    offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
         pyautogui.moveTo(32, 165)    #for 75% on Folio
@@ -83,14 +83,13 @@ def main():
             pyautogui.click()
             return    #stops script upon 'Already p/u' message
         if words[0] == 'Name:' :
-            patname = words[1]  #KICK IN TO A DIFFT FUNCTION!  
+            patname = words[1]  #ASHFORD. KICK IN TO A DIFFT FUNCTION!  
         if words[0] == 'Queue:' :
             if 'UK' in words :
                 time = '' 
         if words[0] == 'Patron:' :
             if patname == 'friend' and words[1] != 'anonymous':
                 patname = words[1]
-                patname = patname.capitalize()
             patmail = words[-1]
             if patmail == 'provided' :
                 patmail = 'They gave us no address'
@@ -102,6 +101,7 @@ def main():
         if iznta_question() :
             offer = 'What can I help you with?'
             continue
+    patname = patname.capitalize()
     if patname == 'Library' : patname = 'friend'
     if patmail == 'rovided' : patmail = 'They gave us no address'
     patlibraryX = '' 
