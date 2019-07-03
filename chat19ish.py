@@ -1,12 +1,36 @@
-import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod
+import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput, threading
 #TODO: Make a module that massages the library names -> Tacked this into titlecaseMod
-#DONE: Added 'no email' plea to clipboard _after_ initial greeting (and, not for MD chats!)
-#NEED AN EASY WAY TO REWRITE pickup() AND pasteGreeting() COORDINATES ON THE FLY BY JUST CLICKING:
-#CAN pyautogui ALTER VARIABLES USING CURSOR POSITION & TRIPLECLICKS? AND CAN main() BE KICKED OFF
-#BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
+#CAN main() BE KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
+from pynput.mouse import Listener
+
+xari = 6 ; yari = 7 ; count = 3
+#def fix_coordinates(): Need an interface to prompt when/where to click
+#Then these get set & saved as 'constants'
+def on_click(x, y, button, pressed) :
+    global xari, yari
+    global count
+    while count > 0:
+        print('Clicked: ' + str(x) + ' and ' + str(y))
+        count -= 1
+        if count == 1:
+           break
+        xari = x ; yari = y
+    listener.stop()
+'''
+---Goes into pickup()---
+with Listener(on_click=on_click) as listener:
+    listener.join()
+pyautogui.moveTo(xari, yari)
+pyautogui.moveTo(xari, yari*1.364)
+---In grab_deets---
+pyautogui.moveTo(xari, yari*3.6)
+---In paste_greeting---
+pyautogui.moveTo(yari*6.061, yari*2.73)
+'''
+
 
 def main():
     patname = 'friend'
@@ -115,9 +139,6 @@ def main():
             patlibraryX = str(patlibraryX)
             patlibraryX = titlecase(patlibraryX)
             break
-      #  brack = ['(',')']
-      #  if brack[0] in kotoba or brack[1] in kotoba  :
-       #     kotoba = ''
         else:
             patlibraryX = patlibraryX + ' ' + kotoba
             patlibraryX = titlecase(patlibraryX)
