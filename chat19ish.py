@@ -1,10 +1,11 @@
-import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput, threading
+import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
 #TODO: Make a module that massages the library names -> Tacked this into titlecaseMod
 #CAN main() BE KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
 from pynput.mouse import Listener
+from tkinter import *
 
 xari = 6 ; yari = 7 ; count = 3
 #def fix_coordinates(): Need an interface to prompt when/where to click
@@ -15,9 +16,10 @@ def on_click(x, y, button, pressed) :
     while count > 0:
         print('Clicked: ' + str(x) + ' and ' + str(y))
         count -= 1
-        if count == 1:
+        if count == 1 and yari != 7:
            break
         xari = x ; yari = y
+    window.after(2000, window.destroy)    
     listener.stop()
 '''
 ---Goes into pickup()---
@@ -44,14 +46,14 @@ def main():
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
-        pyautogui.moveTo(32, 165)    #for 75% on Folio
+        pyautogui.moveTo(732, 165)    #for 75% on Folio
         pyautogui.click()    #hits the 'New' tab
         pyautogui.PAUSE = .8   #how long does it take to load/switch tabs?
-        pyautogui.moveTo(32, 225)   #for 75%  :USE pyautogui.position()
+        pyautogui.moveTo(732, 225)   #for 75%  :USE pyautogui.position()
         pyautogui.click()   #picks up caller
 
     def grab_deets() :
-        pyautogui.moveTo(32, 600)
+        pyautogui.moveTo(732, 600)
     #  pyautogui.click()
         pyautogui.PAUSE = 2.7     #how long does patron take to load?
         pyautogui.click()
@@ -91,7 +93,7 @@ def main():
             return " And though you're not obliged to give an email address, which we certainly <b><i>never</i></b> use to track or to spam anyone, it does help us serve you better. Is there an address where we can reach you in case we're disconnected and another librarian needs to follow up?"
 
     def pastegreeting() :
-        pyautogui.moveTo(1000, 450)
+        pyautogui.moveTo(900, 85)
         pyautogui.click()
         pyautogui.hotkey('ctrl', 'v')
 
@@ -151,5 +153,26 @@ def main():
     print(greeting)
     if addAsk != '' :
         pyperclip.copy(addAsk)
+
+window = Tk()
+window.title("Map your screen")
+window.geometry('350x80+300+225')
+window.lift()
+ws = window.winfo_screenwidth()
+#hs = window.winfo_screenheight()
+print(ws)
+lbl = Label(window, text="With the QP chat interface screen up,\nclick the 'New' tab at upper left above the blue bar")
+lbl.grid(column=0, row=0)
+#window.after(7000, window.destroy) #TODO: DESTROY AFTER VALID CLICK, W/ CALLBACK (or Iterator, or Generator?)
+with Listener(on_click=on_click) as listener:
+    window.mainloop()
+    #window.wait_variable(xari)
+    print('2nd: ' + str(xari))
+    listener.join()
+print(str(xari) + ', ' + str(yari) + ' the third')
+listener.stop()
+
+#window.after(3000, on_click(xari, yari, 'button', 'pressed'))
+print('Finish line!')
 if __name__ == "__main__":
     main()
