@@ -5,8 +5,6 @@ import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput,
 #MULTIPLE RUNS OF THE PROGRAM?
 #MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
 #SAVE 'CONFIG' FILE/FUNCTION' TO DISK
-#TODO: tkinter ALERT WHEN EMAIL NOT SUPPLIED
-
 
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
@@ -160,7 +158,15 @@ def main():
     print(greeting)
     if addAsk != '' :
         pyperclip.copy(addAsk)
-
+        mailAlert = Tk()
+        mailAlert.title("No mail supplied!")
+        mailAlert.geometry('350x120+300+225')
+        mailAlert.lift()
+        mailbl = Label(mailAlert, text="Patron gave no email!\nYour clipboard has a\nmessage to ask for it")
+        mailbl.grid(column=0, row=0)
+        mailAlert.after(2500, mailAlert.destroy)
+        mailAlert.mainloop()
+        
 window = Tk()
 window.title("Map your screen")
 window.geometry('350x80+300+225')
