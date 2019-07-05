@@ -1,6 +1,13 @@
 import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
-#TODO: Make a module that massages the library names -> Tacked this into titlecaseMod
 #CAN main() BE KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
+#ABOVE, POSSIBLY THROUGH pyhook ?
+#NOW THAT WE CAN CAPTURE MOUSE CLICKS & WRITE THEM TO pyautogui/pyperclip FUNCTIONS, HOW TO STORE THOSE THROUGH
+#MULTIPLE RUNS OF THE PROGRAM?
+#MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
+#SAVE 'CONFIG' FILE/FUNCTION' TO DISK
+#TODO: tkinter ALERT WHEN EMAIL NOT SUPPLIED
+
+
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
@@ -22,6 +29,7 @@ def on_click(x, y, button, pressed) :
     window.after(2000, window.destroy)    
     listener.stop()
 '''
+TODO: TEST THESE COORDS, LOOK AT USE OF SCREEN SIZE
 ---Goes into pickup()---
 with Listener(on_click=on_click) as listener:
     listener.join()
@@ -135,7 +143,6 @@ def main():
         brack = '('
         if brack in kotoba :
             indx = patlibrary.index(kotoba)
-            print(indx)
             patlibraryX = patlibrary[ : indx ]
             patlibraryX = ' '.join(patlibraryX)
             patlibraryX = str(patlibraryX)
