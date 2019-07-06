@@ -1,10 +1,11 @@
-import pyperclip, re, string, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
+import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
 #CAN main() BE KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
 #ABOVE, POSSIBLY THROUGH pyhook ?
 #NOW THAT WE CAN CAPTURE MOUSE CLICKS & WRITE THEM TO pyautogui/pyperclip FUNCTIONS, HOW TO STORE THOSE THROUGH
 #MULTIPLE RUNS OF THE PROGRAM?
 #MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
 #SAVE 'CONFIG' FILE/FUNCTION' TO DISK
+#ANOTHER THING: SHOULD BE SIMPLE TO SCRAPE LOCATION FROM, E.G. https://www.ip2location.com/demo/172.91.22.94
 
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
@@ -13,7 +14,6 @@ from pynput.mouse import Listener
 from tkinter import *
 
 xari = 6 ; yari = 7 ; count = 3
-#def fix_coordinates(): Need an interface to prompt when/where to click
 #Then these get set & saved as 'constants'
 def on_click(x, y, button, pressed) :
     global xari, yari
@@ -39,7 +39,6 @@ pyautogui.moveTo(xari, yari*3.6)
 pyautogui.moveTo(yari*6.061, yari*2.73)
 '''
 
-
 def main():
     patname = 'friend'
     patmail = 'Zero'
@@ -52,15 +51,14 @@ def main():
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
-        pyautogui.moveTo(732, 165)    #for 75% on Folio
+        pyautogui.moveTo(32, 204)    #for Practice gui on Plateada
         pyautogui.click()    #hits the 'New' tab
         pyautogui.PAUSE = .8   #how long does it take to load/switch tabs?
-        pyautogui.moveTo(732, 225)   #for 75%  :USE pyautogui.position()
+        pyautogui.moveTo(32, 225)   #for 75%  :USE pyautogui.position()
         pyautogui.click()   #picks up caller
 
     def grab_deets() :
-        pyautogui.moveTo(732, 600)
-    #  pyautogui.click()
+        pyautogui.moveTo(32, 600)
         pyautogui.PAUSE = 2.7     #how long does patron take to load?
         pyautogui.click()
         pyautogui.PAUSE = .1     #need to be on the new patron, and Info tab
@@ -70,7 +68,7 @@ def main():
         return s
 
     def log_stuff(s):
-        f = open("openings.txt", "a+")
+        f = open("openings.txt", "a+", encoding="utf-8")
         s = pyperclip.paste() 
         f.write("\r\n" + s + "\r\n" + "-------------------------------------------------------")
         f.close()
@@ -85,8 +83,6 @@ def main():
     def iznta_question() :
         if 'Qwidget:' in words :
             qwposi = words.index('Qwidget:')
-          #  print (qwposi)
-          #  print(len(words) - qwposi - 1)
             if (len(words) - qwposi) <= 4 :
                 return True
             else :
@@ -99,7 +95,7 @@ def main():
             return " And though you're not obliged to give an email address, which we certainly <b><i>never</i></b> use to track or to spam anyone, it does help us serve you better. Is there an address where we can reach you in case we're disconnected and another librarian needs to follow up?"
 
     def pastegreeting() :
-        pyautogui.moveTo(900, 85)
+        pyautogui.moveTo(1000, 450)
         pyautogui.click()
         pyautogui.hotkey('ctrl', 'v')
 
@@ -161,10 +157,11 @@ def main():
         mailAlert = Tk()
         mailAlert.title("No mail supplied!")
         mailAlert.geometry('350x120+300+225')
-        mailAlert.lift()
         mailbl = Label(mailAlert, text="Patron gave no email!\nYour clipboard has a\nmessage to ask for it")
         mailbl.grid(column=0, row=0)
-        mailAlert.after(2500, mailAlert.destroy)
+        mailAlert.lift()
+        mailAlert.deiconify()
+        mailAlert.after(8500, mailAlert.destroy)
         mailAlert.mainloop()
         
 window = Tk()
@@ -176,7 +173,6 @@ ws = window.winfo_screenwidth()
 print(ws)
 lbl = Label(window, text="With the QP chat interface screen up,\nclick the 'New' tab at upper left above the blue bar")
 lbl.grid(column=0, row=0)
-#window.after(7000, window.destroy) #TODO: DESTROY AFTER VALID CLICK, W/ CALLBACK (or Iterator, or Generator?)
 with Listener(on_click=on_click) as listener:
     window.mainloop()
     #window.wait_variable(xari)
@@ -184,8 +180,8 @@ with Listener(on_click=on_click) as listener:
     listener.join()
 print(str(xari) + ', ' + str(yari) + ' the third')
 listener.stop()
-
-#window.after(3000, on_click(xari, yari, 'button', 'pressed'))
 print('Finish line!')
 if __name__ == "__main__":
     main()
+keyboard.add_hotkey('shift+end', main)
+keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
