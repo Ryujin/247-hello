@@ -1,6 +1,5 @@
 import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
-#CAN main() BE KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION?
-#ABOVE, POSSIBLY THROUGH pyhook ?
+#NOW main() IS KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION
 #NOW THAT WE CAN CAPTURE MOUSE CLICKS & WRITE THEM TO pyautogui/pyperclip FUNCTIONS, HOW TO STORE THOSE THROUGH
 #MULTIPLE RUNS OF THE PROGRAM?
 #MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
@@ -13,17 +12,23 @@ from titlecaseMod import titlecase
 from pynput.mouse import Listener
 from tkinter import *
 
-xari = 6 ; yari = 7 ; count = 3
-#Then these get set & saved as 'constants'
+count = 3
+xari2 = 206 ; yari2 = 207 ; count = 3
+#Then these get set & saved as 'constants', but it's only happening below, not above!
 def on_click(x, y, button, pressed) :
-    global xari, yari
+    global xari2, yari2, xari0, yari0
     global count
     while count > 0:
-        print('Clicked: ' + str(x) + ' and ' + str(y))
+        if count == 2 and yari2 != 207:
+            xari0 = x
+            yari0 = y
+        xari2 = x
+        print('Clicked: ' + str(x) + ' and ' + str(y) + ' and xari2 is ' + str(xari2))
+        print(count)
         count -= 1
-        if count == 1 and yari != 7:
+        if count == 1 and yari2 != 207:
            break
-        xari = x ; yari = y
+        xari2 = x ; yari2 = y
     window.after(2000, window.destroy)    
     listener.stop()
 '''
@@ -51,15 +56,17 @@ def main():
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
-        pyautogui.moveTo(32, 204)    #for Practice gui on Plateada
+        global xari, yari, xari2, yari2, xari0, yari0
+        pyautogui.moveTo(xari0, yari0)    #for Practice gui: 23, 194
         pyautogui.click()    #hits the 'New' tab
         pyautogui.PAUSE = .8   #how long does it take to load/switch tabs?
-        pyautogui.moveTo(32, 225)   #for 75%  :USE pyautogui.position()
+        pyautogui.moveTo(xari2, yari2)   #for 75%  :USE pyautogui.position()  # 23, 241
         pyautogui.click()   #picks up caller
 
     def grab_deets() :
-        pyautogui.moveTo(32, 600)
-        pyautogui.PAUSE = 2.7     #how long does patron take to load?
+        global xari2, yari2
+        pyautogui.moveTo(xari2, yari2+100)       # 23, 421 yari2*2.17
+        pyautogui.PAUSE = 2.7     #how long does patron take to load?      
         pyautogui.click()
         pyautogui.PAUSE = .1     #need to be on the new patron, and Info tab
         pyautogui.hotkey('ctrl', 'a')    #(possibly not automatable...)
@@ -95,7 +102,7 @@ def main():
             return " And though you're not obliged to give an email address, which we certainly <b><i>never</i></b> use to track or to spam anyone, it does help us serve you better. Is there an address where we can reach you in case we're disconnected and another librarian needs to follow up?"
 
     def pastegreeting() :
-        pyautogui.moveTo(1000, 450)
+        pyautogui.moveTo(700, yari0*1.86)     # (xari*6.061, yari*2.73)       # 700, 360
         pyautogui.click()
         pyautogui.hotkey('ctrl', 'v')
 
@@ -175,11 +182,22 @@ lbl = Label(window, text="With the QP chat interface screen up,\nclick the 'New'
 lbl.grid(column=0, row=0)
 with Listener(on_click=on_click) as listener:
     window.mainloop()
-    #window.wait_variable(xari)
-    print('2nd: ' + str(xari))
     listener.join()
-print(str(xari) + ', ' + str(yari) + ' the third')
 listener.stop()
+print('Now for Window 2')
+window = Tk()
+window.title("Step two!")
+window.geometry('350x80+300+225')
+window.lift()
+lbl = Label(window, text="Now, click just below the blue bar")
+lbl.grid(column=0, row=0)
+with Listener(on_click=on_click) as listener:
+    window.mainloop()
+    print('3rd: ' + str(xari2) + ' ' + str(yari2))
+    listener.join()
+print(str(xari2) + ', ' + str(yari2) + ' the third')
+listener.stop()
+
 print('Finish line!')
 if __name__ == "__main__":
     main()
