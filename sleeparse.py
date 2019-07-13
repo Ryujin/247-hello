@@ -1,4 +1,4 @@
-import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser
+import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os
 #NOW THAT WE CAN CAPTURE MOUSE CLICKS & WRITE THEM TO pyautogui/pyperclip FUNCTIONS, HOW TO STORE THOSE THROUGH
 #MULTIPLE RUNS OF THE PROGRAM?
 #MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
@@ -10,6 +10,8 @@ pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
 from pynput.mouse import Listener
 from tkinter import *
+from tkinter import ttk
+root = Tk()
 count = 0 
 cfg = configparser.ConfigParser()
 xari = 206 ; yari = 207  
@@ -163,61 +165,58 @@ def main():
         mailbl.grid(column=0, row=0)
         mailAlert.lift()
         mailAlert.deiconify()
-        mailAlert.after(8500, mailAlert.destroy)
+        mailAlert.after(5500, mailAlert.destroy)
         mailAlert.mainloop()
+if not os.path.isfile('config.ini'):
+    window = Tk()
+    window.title("Step one!")
+    window.geometry('350x80+300+225')
+    window.lift()
+    lbl = Label(window, text="Hit the 'New' tab above the blue bar")
+    lbl.grid(column=0, row=0)
+    with Listener(on_click=on_click) as listener:
+        window.mainloop()
+        print('1rd: ' + str(xari2) + ' ' + str(yari2))
+        x0 = xari2  ;   y0 = yari2
+        cfg['tab'] = {'x': x0, 'y': y0}
+        listener.join()
+            
+    window = Tk()
+    window.title("Step two!")
+    window.geometry('350x80+300+225')
+    window.lift()
+    lbl = Label(window, text="Now, click just below the blue bar")
+    lbl.grid(column=0, row=0)
+    with Listener(on_click=on_click) as listener:
+        window.mainloop()
+        print('2nd: ' + str(xari2) + ' ' + str(yari2))
+        x1 = xari2  ;   y1 = yari2
+        cfg['pickup'] = {'x': x1, 'y': y1}
+        listener.join()
+        print(str(xari2) + ', ' + str(yari2) + ' the second')
 
-#cfg = configparser.ConfigParser()
-window = Tk()
-window.title("Step one!")
-window.geometry('350x80+300+225')
-window.lift()
-lbl = Label(window, text="Hit the 'New' tab above the blue bar")
-lbl.grid(column=0, row=0)
-with Listener(on_click=on_click) as listener:
-    window.mainloop()
-    print('1rd: ' + str(xari2) + ' ' + str(yari2))
-    x0 = xari2  ;   y0 = yari2
-    cfg['tab'] = {'x': x0, 'y': y0}
-#    with open('config.ini', 'w') as configfile:
- #       cfg.write(configfile)
-    listener.join()
-   
-#    listener.stop()
-        
-window = Tk()
-window.title("Step two!")
-window.geometry('350x80+300+225')
-window.lift()
-lbl = Label(window, text="Now, click just below the blue bar")
-lbl.grid(column=0, row=0)
-with Listener(on_click=on_click) as listener:
-    window.mainloop()
-    print('2nd: ' + str(xari2) + ' ' + str(yari2))
-    x1 = xari2  ;   y1 = yari2
-    cfg['pickup'] = {'x': x1, 'y': y1}
-  #  with open('config.ini', 'a') as configfile:
-   #     cfg.write(configfile)
-    listener.join()
-    print(str(xari2) + ', ' + str(yari2) + ' the second')
+    window = Tk()
+    window.title("Step three!")
+    window.geometry('350x80+300+225')
+    window.lift()
+    lbl = Label(window, text="Now, inside the chat box")
+    lbl.grid(column=0, row=0)
+    with Listener(on_click=on_click) as listener:
+        window.mainloop()
+        print('3rd: ' + str(xari2) + ' ' + str(yari2))
+        x2 = xari2  ;   y2 = yari2
+        cfg['greet'] = {'x': x2, 'y': y2}
+        with open('config.ini', 'w') as configfile:
+            cfg.write(configfile)
+        listener.join()
+        print(str(xari2) + ', ' + str(yari2) + ' the thirnd')
+        listener.stop()
+else:
+    button = Tk()
+    button.title("To be a button")
+    b = ttk.Button(root, text='You have a configuration already. Want to redo it?', command=main).grid()
+    root.mainloop()
 
-window = Tk()
-window.title("Step three!")
-window.geometry('350x80+300+225')
-window.lift()
-lbl = Label(window, text="Now, inside the chat box")
-lbl.grid(column=0, row=0)
-with Listener(on_click=on_click) as listener:
-    window.mainloop()
-    print('3rd: ' + str(xari2) + ' ' + str(yari2))
-    x2 = xari2  ;   y2 = yari2
-    cfg['greet'] = {'x': x2, 'y': y2}
-    with open('config.ini', 'w') as configfile:
-        cfg.write(configfile)
-    listener.join()
-    print(str(xari2) + ', ' + str(yari2) + ' the thirnd')
-    listener.stop()
-#print (str(x0) + ', ' str(y0) + ' and ' str(x1) + ', ' str(y1) + ' and ' str(x2) + ', ' str(y2)) 
-print('Finish line!')
 if __name__ == "__main__":
     main()
 keyboard.add_hotkey('ctrl+alt+.', main)
