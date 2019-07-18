@@ -1,86 +1,37 @@
-import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter
-#NOW main() IS KICKED OFF BY A KEYBOARD COMMAND, PROGRAM 'SLEEPS' B/N INVOCATIONS, VARS DEFINED IN HEAD SECTION
+import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser
 #NOW THAT WE CAN CAPTURE MOUSE CLICKS & WRITE THEM TO pyautogui/pyperclip FUNCTIONS, HOW TO STORE THOSE THROUGH
 #MULTIPLE RUNS OF THE PROGRAM?
 #MOUSE MAPPING AS AN *OPTIONAL* STEP UPON LAUNCH--NEED TO
 #SAVE 'CONFIG' FILE/FUNCTION' TO DISK
 #ANOTHER THING: SHOULD BE SIMPLE TO SCRAPE LOCATION FROM, E.G. https://www.ip2location.com/demo/172.91.22.94
-
+#import chatglobs # THIS TO BE REPLACED BY config.ini
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
 from pynput.mouse import Listener
 from tkinter import *
-configfile_name = "config.ini"
-
-def write_config(x_coord, y_coord):
-     #   configfile_name = "config.ini"
-        #if not os.path.isfile(configfile_name):
-    # Create the configuration file as it doesn't exist yet
-    global configfile_name
-    c = open(configfile_name, "a", encoding="utf-8")
-    #c.write('[' + section_name + '] \r')
-    c.write('x=' + x_coord + '\r')
-    c.write('y=' + y_coord)
-    c.write('\r\n')
-    c.close()
-def write_section(section_name):
-    global configfile_name
-    c = open(configfile_name, "a", encoding="utf-8")
-    c.write('[' + section_name + '] \r')
-    c.close()
-
-'''
-import cfg_load
-fig = cfg_load.load('config.ini')
-print(type(config))
-for section in fig:
-    print(section)
-print(fig['pickup'])
-'''
-
-count = 5
-xari2 = 206 ; yari2 = 207 ; count = 5 ; xari0 = 100 ; yari0 = 100 ; xari3 = 50 ; yari3 = 50
-#Then these get set & saved as 'constants', but it's only happening below, not above!
+count = 0 
+config = configparser.ConfigParser()
+xari = 206 ; yari = 207  
+ 
 def on_click(x, y, button, pressed) :
-    global xari2, yari2, xari0, yari0, xari3, yari3
-    global count
-    while count > 0:
-        if count == 4 and yari2 != 207:
-            xari0 = x
-            yari0 = y
-            continue
-        print('Clicked: ' + str(x) + ' and ' + str(y) + ' and xari2 is ' + str(xari2))
+    global xari2, yari2, xari0, yari0, count
+    while count != 1:
         print(count)
-        count -= 1
-    write_config(str(x), str(y))
+        print('Clicked: ' + str(x) + ' and ' + str(y))
+        count = count + 1
+        print(count)
+        break
+    xari2 = x ; yari2 = y
+ #   g = open("/usr/local/lib/python3.6/dist-packages/chatglobs/__init__.py", "a+", encoding="utf-8")
+  #  g.write("\r\n" + "x = " + str(x) +  ", y = " + str(y) + "\r\n")
+   # g.close()
     window.after(2000, window.destroy)    
     listener.stop()
-'''
-        if count == 3 and yari2 != 207:
-           xari2 = x ; yari2 = y
-           break
-        if count == 1 and yari2 != 207:
-            xari3 = x ; yari3 = y
-            break
-        '''
- #       count -= 1
- #   window.after(2000, window.destroy)    
-  #  listener.stop()
-'''
-TODO: TEST THESE COORDS, LOOK AT USE OF SCREEN SIZE
----Goes into pickup()---
-with Listener(on_click=on_click) as listener:
-    listener.join()
-pyautogui.moveTo(xari, yari)
-pyautogui.moveTo(xari, yari*1.364)
----In grab_deets---
-pyautogui.moveTo(xari, yari*3.6)
----In paste_greeting---
-pyautogui.moveTo(yari*6.061, yari*2.73)
-'''
 
 def main():
+    global xari
+    print(xari)
     patname = 'friend'
     patmail = 'Zero'
     patlibrary = 'Stax'
@@ -92,16 +43,16 @@ def main():
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
-        global xari2, yari2, xari0, yari0
-        pyautogui.moveTo(xari0, yari0)    #for Practice gui: 23, 194
+        global xari, yari, xari2, yari2, xari0, yari0
+        pyautogui.moveTo(x0, y0)     
         pyautogui.click()    #hits the 'New' tab
         pyautogui.PAUSE = .8   #how long does it take to load/switch tabs?
-        pyautogui.moveTo(xari2, yari2)   #for 75%  :USE pyautogui.position()  # 23, 241
+        pyautogui.moveTo(x1, y1)   
         pyautogui.click()   #picks up caller
 
     def grab_deets() :
-        global xari2, yari2
-        pyautogui.moveTo(xari2, yari2+100)       # 23, 421 yari2*2.17
+        global x1, y1
+        pyautogui.moveTo(x1, y1*1.7)    #cursor han
         pyautogui.PAUSE = 2.7     #how long does patron take to load?      
         pyautogui.click()
         pyautogui.PAUSE = .1     #need to be on the new patron, and Info tab
@@ -138,7 +89,7 @@ def main():
             return " And though you're not obliged to give an email address, which we certainly <b><i>never</i></b> use to track or to spam anyone, it does help us serve you better. Is there an address where we can reach you in case we're disconnected and another librarian needs to follow up?"
 
     def pastegreeting() :
-        pyautogui.moveTo(xari3, yari3)     # (xari*6.061, yari*2.73)       # 700, 360
+        pyautogui.moveTo(x2, y2)     # (xari*6.061, yari*2.73)       # 700, 360
         pyautogui.click()
         pyautogui.hotkey('ctrl', 'v')
 
@@ -195,6 +146,7 @@ def main():
     log_stuff(greeting)
     pastegreeting()
     print(greeting)
+    print('AddAsk says ' + addAsk)
     if addAsk != '' :
         pyperclip.copy(addAsk)
         mailAlert = Tk()
@@ -206,23 +158,21 @@ def main():
         mailAlert.deiconify()
         mailAlert.after(8500, mailAlert.destroy)
         mailAlert.mainloop()
-        
+
 window = Tk()
-window.title("Map your screen")
+window.title("Step one!")
 window.geometry('350x80+300+225')
 window.lift()
-ws = window.winfo_screenwidth()
-write_section('tab')
-#hs = window.winfo_screenheight()
-print(ws)
-lbl = Label(window, text="With the QP chat interface screen up,\nclick the 'New' tab at upper left above the blue bar")
+lbl = Label(window, text="Hit the 'New' tab above the blue bar")
 lbl.grid(column=0, row=0)
 with Listener(on_click=on_click) as listener:
     window.mainloop()
+    print('1rd: ' + str(xari2) + ' ' + str(yari2))
+    x0 = xari2  ;   y0 = yari2
     listener.join()
-listener.stop()
-write_section('pickup')
-print('Now for Window 2')
+    print(str(xari2) + ', ' + str(yari2) + ' the firsd')
+#    listener.stop()
+        
 window = Tk()
 window.title("Step two!")
 window.geometry('350x80+300+225')
@@ -231,22 +181,26 @@ lbl = Label(window, text="Now, click just below the blue bar")
 lbl.grid(column=0, row=0)
 with Listener(on_click=on_click) as listener:
     window.mainloop()
-    print('3rd: ' + str(xari2) + ' ' + str(yari2))
+    print('2nd: ' + str(xari2) + ' ' + str(yari2))
+    x1 = xari2  ;   y1 = yari2
     listener.join()
-print(str(xari2) + ', ' + str(yari2) + ' the third')
-listener.stop()
-write_section('paste')
+    print(str(xari2) + ', ' + str(yari2) + ' the second')
+
 window = Tk()
 window.title("Step three!")
 window.geometry('350x80+300+225')
 window.lift()
-lbl = Label(window, text="Lastly, click in the text box")
+lbl = Label(window, text="Now, inside the chat box")
 lbl.grid(column=0, row=0)
 with Listener(on_click=on_click) as listener:
     window.mainloop()
+    print('3rd: ' + str(xari2) + ' ' + str(yari2))
+    x2 = xari2  ;   y2 = yari2
+    listener.join()
+    print(str(xari2) + ', ' + str(yari2) + ' the thirnd')
 
 print('Finish line!')
 if __name__ == "__main__":
     main()
-keyboard.add_hotkey('shift+control', main)
+keyboard.add_hotkey('ctrl+alt+.', main)
 keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
