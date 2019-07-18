@@ -1,6 +1,6 @@
 import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os
 
-#_WRITES_ CONFIG BUT DOES NOT READ FROM IT
+#_WRITES_ CONFIG AND DOES NOW READ FROM IT
 
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
