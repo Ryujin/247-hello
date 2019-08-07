@@ -1,7 +1,5 @@
 import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os
 
-#_WRITES_ CONFIG FILE AND DOES READ FROM IT
-
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
@@ -173,12 +171,14 @@ def main():
 def map():
     global window, listener
     window = Tk()
+    pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen")
-    window.geometry('350x80+300+225')
+    #window.geometry('350x80+300+225')
+    window.configure(background='blue')
     window.lift()
     write_first_section('tab')
-    lbl = Label(window, text="With the QP chat interface screen up,\nclick the 'New' tab at upper left above the blue bar")
-    lbl.grid(column=0, row=0)
+    lblPic = Label(window, image=pic).pack(side="right")
+    lbl = Label(window, justify=LEFT, text="With the QP chat interface screen up,\nclick the 'New' tab at upper left above the blue bar").pack(side='left')
     with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
@@ -188,9 +188,11 @@ def map():
     window = Tk()
     window.title("Step two!")
     window.geometry('350x80+300+225')
+    window.configure(background='pink')
     window.lift()
     lbl = Label(window, text="Now, click just below the blue bar")
     lbl.grid(column=0, row=0)
+    lbl.configure(bg='yellow')
     with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
@@ -200,9 +202,11 @@ def map():
     window = Tk()
     window.title("Step three!")
     window.geometry('350x80+300+225')
+    window.configure(background='#00ff00')
     window.lift()
     lbl = Label(window, text="Lastly, click in the text box")
     lbl.grid(column=0, row=0)
+    lbl.pack(side = TOP)
     with Listener(on_click=on_click) as listener:
         window.mainloop()
     
@@ -222,14 +226,15 @@ if not os.path.isfile('config.ini'):
 else:
     window = Tk()
     window.title("Choose what to do at launch")
-    window.geometry('550x180+300+225')
+    window.geometry('550x280+300+225')
+    window.configure(background='pink')
     window.lift()
-    lbl = Label(window, text="Looks like you have configured. If you're using the same browser and have not\n changed the zoom level, go ahead and skip it!")
-    lbl.pack(anchor='nw')
-    button_no = Button(window, text="Skip it and \nrun the program", bg="green", fg="white", command=run_it)
-    button_no.pack(side = LEFT)
+    lbl = Label(window, text="Looks like you have configured the software. Nice!\nIf you're still using the same browser and haven't\nchanged its zoom level, no need to reconfigure!", font=("Helvetica", 16))
+    lbl.pack(anchor='n')
     button_yes = Button(window, text="Re-do the\nconfiguration", bg="orange", command=map_it)
-    button_yes.pack(side = LEFT)
+    button_yes.pack(side = BOTTOM, fill= X, pady = 2, padx = .5)
+    button_no = Button(window, text="Skip it and \nrun the program", bg="green", fg="white", command=run_it)
+    button_no.pack(side = BOTTOM, fill = X, pady = 2, padx = .5)
     window.mainloop()
 
 if __name__ == "__main__":
