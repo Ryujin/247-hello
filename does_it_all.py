@@ -207,7 +207,7 @@ def map():
     window.configure(background='#00ff00')
     window.lift()
     lblPic3 = Label(window, image=pic3).pack(side="right")
-    lbl = Label(window, justify=LEFT, text="Lastly, click inside the chat box", font=("Helvetica", 14)).pack(side='left')
+    lbl = Label(window, justify=LEFT, text="Lastly, click inside the\nthe Chat Input Field", font=("Helvetica", 14)).pack(side='left')
     #lbl.grid(column=0, row=0)
     #lbl.pack(side = TOP)
     with Listener(on_click=on_click) as listener:
