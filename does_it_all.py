@@ -7,6 +7,8 @@ from pynput.mouse import Listener
 from tkinter import *
 configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
+val = 'Test'   
+timenow = 'Huh'
 
 def write_config(x_coord, y_coord):
     global configfile_name
@@ -43,7 +45,9 @@ def main():
     gatewayURL = 'placehold'
     quest = 0
     prefgreeting = ''
-    time = ' this evening'
+    global timenow
+    # time = ' this evening'
+
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
@@ -118,7 +122,7 @@ def main():
             patname = words[1]  #ASHFORD. KICK IN TO A DIFFT FUNCTION!  
         if words[0] == 'Queue:' :
             if 'UK' in words :
-                time = '' 
+               timenow = '' 
         if words[0] == 'Patron:' :
             if patname == 'friend' and words[1] != 'anonymous':
                 patname = words[1]
@@ -153,7 +157,8 @@ def main():
     addAsk = emailask()
     #cfg.read('config.ini')
    # patname = cfg['name']['x']
-    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
+  #  greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
+    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + timenow + ". " + val + " " + patlibraryX + " colleagues while they're busy with other things. " + offer)
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
@@ -171,16 +176,16 @@ def main():
         mailAlert.mainloop()
 
 def map():
-    global window, listener
+    global window, listener, val, timenow
     window = Tk()
     pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen--Step 1 of 3")
-    window.geometry('850x230+300+325')
+    window.geometry('725x240+300+325')
     window.configure(background='blue')
     window.lift()
     write_first_section('tab')
     lblPic = Label(window, image=pic).pack(side="right")
-    lbl = Label(window, justify=LEFT, text="On the actual QP\nchat interface screen,\nclick the 'New' tab at upper\nleft above the blue bar", font=("Helvetica", 14)).pack(side='left')
+    lbl = Label(window, justify=LEFT, text="On the actual QP\nchat interface screen,\nclick the 'New' tab at upper\nleft above the blue bar", font=("Helvetica", 14)).pack(side='right')
     with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
@@ -190,7 +195,7 @@ def map():
     window = Tk()
     pic2 = PhotoImage(file="tabsP.gif")
     window.title("Step two of three!")
-    window.geometry('650x230+210+225')
+    window.geometry('650x260+210+225')
     window.configure(background='pink')
     window.lift()
     lblPic2 = Label(window, image=pic2).pack(side="left")
@@ -204,15 +209,38 @@ def map():
     window = Tk()
     pic3 = PhotoImage(file="tabsH.gif")
     window.title("Final step--3 of 3!")
-    window.geometry('800x200+0+5')
+    window.geometry('800x235+210+25')
     window.configure(background='#00ff00')
     window.lift()
     lblPic3 = Label(window, image=pic3).pack(side="right")
-    lbl = Label(window, justify=LEFT, text="Lastly, click inside the\nthe Chat Input Field", font=("Helvetica", 14)).pack(side='left')
+    lbl = Label(window, justify=LEFT, text="Lastly, click inside the\nthe Chat Input Field", font=("Helvetica", 14)).pack(side='right')
     #lbl.grid(column=0, row=0)
     #lbl.pack(side = TOP)
     with Listener(on_click=on_click) as listener:
         window.mainloop()
+    window = Tk()
+    def grab_input():
+        global val, timenow
+        inputValue=inp.get("1.0","end-1c")
+        timeValue = timeinp.get("1.0","end-1c")
+        val = inputValue
+        timenow = timeValue
+        print('val is ' + val)
+        print ('time is ' + timenow + ' inside the grab function.')
+    window.title("Now, make up a greeting")
+    window.geometry('520x315+210+25')
+    window.configure(background='#0fff00')
+    timeinp = Text(window, width=20, height = 1)
+    timeinp.insert('1.0', 'When izzitnow?')
+    timeinp.pack(side=LEFT)
+    inp = Text(window, width=60, height=12)
+    inp.insert('1.0', 'Go ahead and type a greeting--use your name, and some\nfriendly badinage.')
+    inp.pack(side=BOTTOM)
+    buttonCommit=Button(window, height=1, width=10, text="Commit", 
+                    command=grab_input)
+    buttonCommit.pack(side=LEFT)
+    print('And now, val is ' + val)
+    window.mainloop()
     
 def stroy():
     window.destroy()
