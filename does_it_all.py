@@ -9,6 +9,7 @@ configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
 val = 'Test'   
 timenow = 'Huh'
+show = ''
 
 def write_config(x_coord, y_coord):
     global configfile_name
@@ -158,7 +159,7 @@ def main():
     #cfg.read('config.ini')
    # patname = cfg['name']['x']
   #  greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
-    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + timenow + ". " + val + " " + patlibraryX + " colleagues while they're busy with other things. " + offer)
+    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you " + timenow + ". " + val + " " + patlibraryX + " colleagues while they're busy with other things. " + offer)
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
@@ -214,24 +215,29 @@ def map():
     window.lift()
     lblPic3 = Label(window, image=pic3).pack(side="right")
     lbl = Label(window, justify=LEFT, text="Lastly, click inside the\nthe Chat Input Field", font=("Helvetica", 14)).pack(side='right')
-    #lbl.grid(column=0, row=0)
-    #lbl.pack(side = TOP)
     with Listener(on_click=on_click) as listener:
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow
+        global val, timenow, show
+        if show != '':
+            show.destroy()
         inputValue=inp.get("1.0","end-1c")
         timeValue = timeinp.get("1.0","end-1c")
         val = inputValue
         timenow = timeValue
+        show = Label(window, text=timenow)
+        show.configure(text=timenow)
+        show.pack()
+        # but this can't be written to config.ini until finalized. Need 2 config files? Sorta makes sense. Time, greeting, keybindings
         print('val is ' + val)
         print ('time is ' + timenow + ' inside the grab function.')
-    window.title("Now, make up a greeting")
+     
+    window.title("Now, make up a greeting and, if you like, specify the time")
     window.geometry('520x315+210+25')
-    window.configure(background='#0fff00')
+    window.configure(background='#c0ffee')
     timeinp = Text(window, width=20, height = 1)
-    timeinp.insert('1.0', 'When izzitnow?')
+    timeinp.insert('1.0', 'What time of day is it?')
     timeinp.pack(side=LEFT)
     inp = Text(window, width=60, height=12)
     inp.insert('1.0', 'Go ahead and type a greeting--use your name, and some\nfriendly badinage.')
@@ -259,8 +265,7 @@ if not os.path.isfile('config.ini'):
     window.title("Giving you a chance to configure the software just for you!")
     window.geometry('650x170+300+225')
     window.configure(background='yellow')
-    window.lift()
-	# need a button with command=map_it()   
+    window.lift()   
     lbl = Label(window, text="Let's customize the program to fit you and your\ncomputer. We need to map your screen, and you will\nalso get to make a greeting script using your name.", font=("Helvetica", 16), bg='yellow')
     lbl.pack(anchor='n')
     lbl2 = Label(window, text="Click the green bar to begin!", font=("Helvetica", 16), bg='yellow')
