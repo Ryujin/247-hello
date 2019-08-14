@@ -9,7 +9,8 @@ configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
 val = 'Test'   
 timenow = 'Huh'
-show = ''
+show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = ''
+global h3Value
 
 def write_config(x_coord, y_coord):
     global configfile_name
@@ -46,7 +47,7 @@ def main():
     gatewayURL = 'placehold'
     quest = 0
     prefgreeting = ''
-    global timenow
+    global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value
     # time = ' this evening'
 
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
@@ -177,7 +178,7 @@ def main():
         mailAlert.mainloop()
 
 def map():
-    global window, listener, val, timenow
+    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue
     window = Tk()
     pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen--Step 1 of 3")
@@ -219,34 +220,95 @@ def map():
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow, show
+        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value
         if show != '':
             show.destroy()
-        inputValue=inp.get("1.0","end-1c")
+        if shola1 != '':    
+            shola1.destroy()
+        if shola2 != '':    
+            shola2.destroy()
+        if liban !='':
+            liban.destroy()
+        if shola3 != '':    
+            shola3.destroy()
+        if shola4 != '':    
+            shola4.destroy()
+        h1Value=hola1inp.get("1.0","end-1c")
+        h2Value=hola2inp.get("1.0","end-1c")
+        h3Value=hola3inp.get("1.0","end-1c")
+        h4Value=hola4inp.get("1.0","end-1c")
         timeValue = timeinp.get("1.0","end-1c")
-        val = inputValue
+        nameValue = libaninp.get("1.0","end-1c")
+        val = h1Value
         timenow = timeValue
-        show = Label(window, text=timenow)
+        frame = Frame(window)
+        frame.grid(row=7, columnspan=3, sticky=W+E)
+        shola1 = Label(frame, text = val)
+        shola1.configure(text=val)
+        shola1.pack(side="left")
+        show = Label(frame, text=timenow)
         show.configure(text=timenow)
-        show.pack()
-        # but this can't be written to config.ini until finalized. Need 2 config files? Sorta makes sense. Time, greeting, keybindings
+        show.pack(side="left")
+        shola2 = Label(frame, text = h2Value)
+        shola2.configure(text=h2Value)
+        shola2.pack(side="left")
+        liban = Label(frame, text = nameValue)
+        liban.configure(text = nameValue)
+        liban.pack(side="left")
+        shola3 = Label(frame, text = h3Value + ' Whatever Public or Academic Library ')
+        shola3.configure(text=h3Value)
+        shola3.pack(side="left")
+        shola4 = Label(frame, text = h4Value)
+        shola4.configure(text=h4Value)
+        shola4.pack(side="left")
         print('val is ' + val)
         print ('time is ' + timenow + ' inside the grab function.')
+        cfig = configparser.ConfigParser()
+        cfig.read('config0.ini')
+        changreet = cfig['greet']
+        changreet['timenow'] = timenow
+        changreet['hola2'] = h2Value
+        changreet['hola3'] = h3Value
+        changreet['hola4'] = h4Value
+        changreet['libanname'] = nameValue
+        with open('config0.ini', 'w') as configfile:
+            cfig.write(configfile)
      
+    cfig = configparser.ConfigParser()
+    cfig.read('config0.ini')
+    h1 = cfig['greet']['hola1']
+    h2 = cfig['greet']['hola2']
+    h3 = cfig['greet']['hola3']
+    h4 = cfig['greet']['hola4']
+    libanname = cfig['greet']['libanname']
+    thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
-    window.geometry('520x315+210+25')
+    window.geometry('620x315+210+25')
     window.configure(background='#c0ffee')
-    timeinp = Text(window, width=20, height = 1)
-    timeinp.insert('1.0', 'What time of day is it?')
-    timeinp.pack(side=LEFT)
-    inp = Text(window, width=60, height=12)
-    inp.insert('1.0', 'Go ahead and type a greeting--use your name, and some\nfriendly badinage.')
-    inp.pack(side=BOTTOM)
+    hola1inp = Text(window, width=35, height = 2)
+    hola1inp.insert('1.0', h1 )
+    hola2inp = Text(window, width=35, height = 2)
+    hola2inp.insert('1.0', h2 )
+    hola3inp = Text(window, width=35, height = 2)
+    hola3inp.insert('1.0', h3 )
+    hola4inp = Text(window, width=35, height = 2)
+    hola4inp.insert('1.0', h4 )
+    libaninp = Text(window, width=35, height = 1)
+    libaninp.insert('1.0', libanname )
+    timeinp = Text(window, width=35, height = 2)
+    timeinp.insert('1.0', thetime )
+    hola1inp.grid(row=1, column=1)
+    timeinp.grid(row=2, column=1)
+    hola2inp.grid(row=3, column=1)
+    libaninp.grid(row=4, column=1)
+    hola3inp.grid(row=5, column=1)
+    hola4inp.grid(row=6, column=1)
     buttonCommit=Button(window, height=1, width=10, text="Commit", 
                     command=grab_input)
-    buttonCommit.pack(side=LEFT)
+    buttonCommit.grid(row=0, column=0)
     print('And now, val is ' + val)
     window.mainloop()
+    
     
 def stroy():
     window.destroy()
