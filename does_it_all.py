@@ -3,8 +3,7 @@ import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMo
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
-#from pynput.mouse import Listener
-from pynput import *
+from pynput.mouse import Listener
 from tkinter import *
 configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
@@ -12,8 +11,6 @@ val = 'Test'
 timenow = 'Huh'
 show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = ''
 global h3Value
-keychoice = 'Hit the button & choose a key!'
-keys_label = 'ditto'
 
 def write_config(x_coord, y_coord):
     global configfile_name
@@ -180,29 +177,8 @@ def main():
         mailAlert.after(8500, mailAlert.destroy)
         mailAlert.mainloop()
 
-def choose_keys():
-    with pynput.keyboard.Listener(
-        on_press=on_press) as glistener:
-        glistener.join()
-
-def on_press(key):
-        global keychoice, keys_label
-        print (type(keys_label))
-        print('{0} pressed'.format(key))
-        while keychoice != '':
-            print('{0} pressed'.format(key))
-          #  keys_label.destroy()
-            print('okay so far')
-            keychoiced = (str('{0} chosen'.format(key)))
-            print(keychoiced)
-            keys_label2 = Label(window, text=keychoiced)
-            keys_label2.pack(side=LEFT)
-            #keys_label.configure(keychoiced)
-            print('the key choice is ' + keychoiced)
-            #window.mainloop()
-            
 def map():
-    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue, keychoice
+    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue
     window = Tk()
     pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen--Step 1 of 3")
@@ -212,7 +188,7 @@ def map():
     write_first_section('tab')
     lblPic = Label(window, image=pic).pack(side="right")
     lbl = Label(window, justify=LEFT, text="On the actual QP\nchat interface screen,\nclick the 'New' tab at upper\nleft above the blue bar", font=("Helvetica", 14)).pack(side='right')
-    with pynput.mouse.Listener(on_click=on_click) as listener:
+    with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
     listener.stop()
@@ -226,7 +202,7 @@ def map():
     window.lift()
     lblPic2 = Label(window, image=pic2).pack(side="left")
     lbl = Label(window, justify=RIGHT, text="Now, click just\nbelow the blue bar", font=("Helvetica", 14)).pack(side='left')
-    with pynput.mouse.Listener(on_click=on_click) as listener:
+    with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
     listener.stop()
@@ -235,16 +211,16 @@ def map():
     window = Tk()
     pic3 = PhotoImage(file="tabsH.gif")
     window.title("Final step--3 of 3!")
-    window.geometry('800x235+210+25')
+    window.geometry('800x235+260+25')
     window.configure(background='#00ff00')
     window.lift()
     lblPic3 = Label(window, image=pic3).pack(side="right")
     lbl = Label(window, justify=LEFT, text="Lastly, click inside the\nthe Chat Input Field", font=("Helvetica", 14)).pack(side='right')
-    with pynput.mouse.Listener(on_click=on_click) as listener:
+    with Listener(on_click=on_click) as listener:
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value
+        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0
         if show != '':
             show.destroy()
         if shola1 != '':    
@@ -277,7 +253,6 @@ def map():
         show = Label(frame, text=timenow)
         show.configure(text=timenow)
         show.pack(side="left")
-        #show.grid(row=0, column=1)
         shola2 = Label(frame, text = h2Value)
         shola2.configure(text=h2Value)
         shola2.pack(side="left")
@@ -294,13 +269,12 @@ def map():
         #shola4.configure(text=h4Value)
         shola4.pack(side="left")
         #shola4.grid(row=1, column=1)
-        print('val in grab_input() is ' + val)
+        print('val is ' + val)
         print ('time is ' + timenow + ' inside the grab function.')
         cfig = configparser.ConfigParser()
         cfig.read('config0.ini')
         changreet = cfig['greet']
         changreet['timenow'] = timenow
-        changreet['hola1'] = h1Value
         changreet['hola2'] = h2Value
         changreet['hola3'] = h3Value
         changreet['hola4'] = h4Value
@@ -317,7 +291,7 @@ def map():
     libanname = cfig['greet']['libanname']
     thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
-    window.geometry('660x346+210+25')
+    window.geometry('660x330+210+25')
     window.configure(background='#c0ffee')
     hola1inp = Text(window, width=35, height = 2)
     hola1inp.insert('1.0', h1 )
@@ -336,33 +310,19 @@ def map():
     hola2inp.grid(row=3, column=1)
     libaninp.grid(row=4, column=1)
     hola3inp.grid(row=5, column=1)
-    greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', bg='#c0ffee', justify=LEFT).grid(row=0, column=0, columnspan=3)
+    greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', justify=LEFT).grid(row=0, column=1, columnspan=2)
     libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=6, column=1, pady=2)
     hola4inp.grid(row=7, column=1)
-    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 12), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=4, column=2, sticky='W')
-    timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 12), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=2, column=2, sticky='W')
+    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=4, column=2, sticky='W')
+    timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=2, column=2, sticky='W')
     buttonPreview=Button(window, height=1, width=17, text="Preview your greeting", bg="yellow",
                     command=grab_input)
-    buttonPreview.grid(row=1, column=0)
-    buttonCommit = Button(window, height=1, width=17, text="Looks good!", bg="lime", fg="black", command=window.destroy)
+    buttonPreview.grid(row=0, column=0)
+    buttonCommit = Button(window, height=1, width=17, text="Looks good!", bg="lime", fg="black", command=stroy)
     buttonCommit.grid(row=10, column=1)
-   # print('And now, h33Value is ' + h33Value)
+    #print('And now, h33Value is ' + h33Value)
     window.mainloop()
-
-    global keychoice, keys_label
-    window = Tk()
-    window.title("Set the wake-up keystrokes!")
-    window.geometry('560x325+210+25')
-    window.configure(background='#c0ffee')
-    bindPrompt = Label(window, text = "Now decide which key combination\nshould trigger a pickup", font=("Helvetica", 14), fg='green').pack(side = TOP)
-    #181.5  #Albrigt Rd (one) , CSA pickup bldg. (three)  Hilltop Rd. (four)
-    choobutton = Button(window, text="start the thing", command=choose_keys).pack(side=LEFT)
-    killbutton = Button(window, text="i'm done here", command=stroy).pack(side=LEFT)
-    #keychoice = tkinter.StringVar()
-    keychoice = 'Okay, pick some keys'
-    keys_label = Label(window, text=keychoice)
-    keys_label.pack(side=LEFT)
-    window.mainloop()
+    
     
 def stroy():
     window.destroy()
@@ -379,7 +339,7 @@ if not os.path.isfile('config.ini'):
     print("In this case, we must run configuration")
     window = Tk()
     window.title("Giving you a chance to configure the software just for you!")
-    window.geometry('650x170+300+225')
+    window.geometry('650x195+300+225')
     window.configure(background='yellow')
     window.lift()   
     lbl = Label(window, text="Let's customize the program to fit you and your\ncomputer. We need to map your screen, and you will\nalso get to make a greeting script using your name.", font=("Helvetica", 16), bg='yellow')
@@ -392,7 +352,7 @@ if not os.path.isfile('config.ini'):
 else:
     window = Tk()
     window.title("Choose what to do at launch")
-    window.geometry('600x182+300+225')
+    window.geometry('600x170+300+225')
     window.configure(background='pink')
     window.lift()
     lbl = Label(window, text="Looks like you have configured the software. Nice!\nIf you're still using the same browser and haven't\nchanged its zoom level, no need to reconfigure!", font=("Helvetica", 16), bg='pink')
@@ -401,10 +361,36 @@ else:
     button_yes.pack(side = BOTTOM, fill= X, pady = 2, padx = .5)
     button_no = Button(window, text="Skip it and \nrun the program", bg="green", fg="white", command=run_it)
     button_no.pack(side = BOTTOM, fill = X, pady = 2, padx = .5)
-    # seems this might be a good place to offer _just_ config of key binding, or greeting -- ?
     window.mainloop()
+
+def keystates():
+    # print('Ctrl: %d,\nAlt: %d,\nFunc: %d,\nShift: %d,\nEnter: %d,\nSpacebar: %d,\nCaps Lock: %d' % (var1.get(), var2.get(), var3.get(), var4.get(), var5.get(), var6.get(), var7.get()))
+    keysts = {} 
+    keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Spacebar']=var6.get() ; keysts['Caps Lock']=var7.get()
+    print(keysts)
+    for key in keysts:
+        if keysts[key] == 1:
+            print(key)
+
+window = Tk()
+window.title("This last bit sets key binding")
+window.geometry('660x315+210+25')
+window.configure(background='#face0f')
+chkLabel = Label(window, text="Choose some keys")
+chkLabel.pack()
+var1=IntVar(); var2=IntVar(); var3=IntVar(); var4=IntVar(); var5=IntVar(); var6=IntVar(); var7=IntVar()
+Checkbutton(window, text='CTRL key', variable=var1).pack(side=LEFT)
+Checkbutton(window, text='ALT key', variable=var2).pack(side=LEFT)
+Checkbutton(window, text='FN key', variable=var3).pack(side=LEFT)
+Checkbutton(window, text='SHIFT key', variable=var4).pack(side=LEFT)
+Checkbutton(window, text='ENTER key', variable=var5).pack(side=LEFT)
+Checkbutton(window, text='Space bar', variable=var6).pack(side=LEFT)
+Checkbutton(window, text='CAPS LOCK key', variable=var7).pack(side=LEFT)
+Button(window, text='Show choices', command=keystates).pack()
+window.lift()
+window.mainloop()
 
 if __name__ == "__main__":
     main()
-pynput.keyboard.add_hotkey('shift+control', main)
-pynput.keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
+keyboard.add_hotkey('enter+control', main)
+keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
