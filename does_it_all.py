@@ -352,7 +352,7 @@ if not os.path.isfile('config.ini'):
 else:
     window = Tk()
     window.title("Choose what to do at launch")
-    window.geometry('600x170+300+225')
+    window.geometry('600x185+300+225')
     window.configure(background='pink')
     window.lift()
     lbl = Label(window, text="Looks like you have configured the software. Nice!\nIf you're still using the same browser and haven't\nchanged its zoom level, no need to reconfigure!", font=("Helvetica", 16), bg='pink')
@@ -372,25 +372,44 @@ def keystates():
         if keysts[key] == 1:
             print(key)
 
+def keystates1():
+    keysts = {} 
+    keysts['control'] = var1.get() ; keysts['alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['shift']=var4.get() ;  keysts['enter'] = var5.get() ; keysts['space']=var6.get() ; keysts['caps_lock']=var7.get()
+    keyset = set()
+    for key in keysts:
+        if keysts[key] == 1:
+            keyset.add(key)
+    print(keyset)
+    global keysetstring
+    keysetstring = str(keyset)
+    keysetstring = keysetstring[2:-2]
+    keysetstring = keysetstring.replace("', '", "+")
+    keysetstring = keysetstring.strip()
+    print(keysetstring)
+    
+    
 window = Tk()
 window.title("This last bit sets key binding")
 window.geometry('660x315+210+25')
 window.configure(background='#face0f')
-chkLabel = Label(window, text="Choose some keys")
-chkLabel.pack()
+chkLabel = Label(window, text="Choose two or three keys you'll press at the same time to awaken the program.\nWhen you hear a call come in, hitting these keys will pick up the call and generate a greeting.\nAvoid key combos that already trigger commonly used shortcuts. For example,\nCtrl + C, or Ctrl + Alt + Del would be terrible choices!")
+# https://pynput.readthedocs.io/en/latest/keyboard.html#pynput.keyboard.Key
+chkLabel.grid(row=0, columnspan=3)
 var1=IntVar(); var2=IntVar(); var3=IntVar(); var4=IntVar(); var5=IntVar(); var6=IntVar(); var7=IntVar()
-Checkbutton(window, text='CTRL key', variable=var1).pack(side=LEFT)
-Checkbutton(window, text='ALT key', variable=var2).pack(side=LEFT)
-Checkbutton(window, text='FN key', variable=var3).pack(side=LEFT)
-Checkbutton(window, text='SHIFT key', variable=var4).pack(side=LEFT)
-Checkbutton(window, text='ENTER key', variable=var5).pack(side=LEFT)
-Checkbutton(window, text='Space bar', variable=var6).pack(side=LEFT)
-Checkbutton(window, text='CAPS LOCK key', variable=var7).pack(side=LEFT)
-Button(window, text='Show choices', command=keystates).pack()
+Checkbutton(window, text='CTRL key', variable=var1).grid(row=2, column=0)
+Checkbutton(window, text='ALT key', variable=var2).grid(row=2, column=1)
+Checkbutton(window, text='FN key', variable=var3).grid(row=2, column=2)
+Checkbutton(window, text='SHIFT key', variable=var4).grid(row=3, column=0)
+Checkbutton(window, text='ENTER key', variable=var5).grid(row=3, column=1)
+Checkbutton(window, text='Space bar', variable=var6).grid(row=3, column=2)
+Checkbutton(window, text='CAPS LOCK key', variable=var7).grid(row=4, column=0)
+Button(window, text='Show choices', command=keystates).grid(row=5, column=0)
+Button(window, text='Finalize choices', command=keystates1).grid(row=5, column=1)
 window.lift()
 window.mainloop()
 
 if __name__ == "__main__":
     main()
-keyboard.add_hotkey('enter+control', main)
+#keyboard.add_hotkey('enter+control', main)
+keyboard.add_hotkey(keysetstring, main)
 keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
