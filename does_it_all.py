@@ -236,10 +236,14 @@ def map():
         h1Value=hola1inp.get("1.0","end-1c")
         h2Value=hola2inp.get("1.0","end-1c")
         h3Value=hola3inp.get("1.0","end-1c")
-        h33Value = h3Value + ' Anytown Public Library '
+        h33Value = h3Value + ' Anytown Public Library'
         h4Value=hola4inp.get("1.0","end-1c")
         timeValue = timeinp.get("1.0","end-1c")
         nameValue = libaninp.get("1.0","end-1c")
+        nameValue = nameValue.strip()
+        h4Value = h4Value.lstrip()
+        h2Value = h2Value.lstrip()
+
         val = h1Value
         timenow = timeValue
         frame = Frame(window)
@@ -291,7 +295,7 @@ def map():
     libanname = cfig['greet']['libanname']
     thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
-    window.geometry('660x330+210+25')
+    window.geometry('660x350+220+25')
     window.configure(background='#c0ffee')
     hola1inp = Text(window, width=35, height = 2)
     hola1inp.insert('1.0', h1 )
@@ -310,14 +314,14 @@ def map():
     hola2inp.grid(row=3, column=1)
     libaninp.grid(row=4, column=1)
     hola3inp.grid(row=5, column=1)
-    greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', justify=LEFT).grid(row=0, column=1, columnspan=2)
+    greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', justify=CENTER).grid(row=0, column=0, columnspan=3)
     libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=6, column=1, pady=2)
     hola4inp.grid(row=7, column=1)
     namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=4, column=2, sticky='W')
     timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=2, column=2, sticky='W')
     buttonPreview=Button(window, height=1, width=17, text="Preview your greeting", bg="yellow",
                     command=grab_input)
-    buttonPreview.grid(row=0, column=0)
+    buttonPreview.grid(row=5, column=0)
     buttonCommit = Button(window, height=1, width=17, text="Looks good!", bg="lime", fg="black", command=stroy)
     buttonCommit.grid(row=10, column=1)
     #print('And now, h33Value is ' + h33Value)
@@ -339,7 +343,7 @@ if not os.path.isfile('config.ini'):
     print("In this case, we must run configuration")
     window = Tk()
     window.title("Giving you a chance to configure the software just for you!")
-    window.geometry('650x195+300+225')
+    window.geometry('650x175+300+225')
     window.configure(background='yellow')
     window.lift()   
     lbl = Label(window, text="Let's customize the program to fit you and your\ncomputer. We need to map your screen, and you will\nalso get to make a greeting script using your name.", font=("Helvetica", 16), bg='yellow')
@@ -358,41 +362,49 @@ else:
     lbl = Label(window, text="Looks like you have configured the software. Nice!\nIf you're still using the same browser and haven't\nchanged its zoom level, no need to reconfigure!", font=("Helvetica", 16), bg='pink')
     lbl.pack(anchor='n')
     button_yes = Button(window, text="Re-do the\nconfiguration", bg="orange", font=("Helvetica", 11), command=map_it)
+   # button_yes = Button(window, text="Re-do the\nconfiguration", bg="orange", font=("Helvetica", 11), command=keyWin)
     button_yes.pack(side = BOTTOM, fill= X, pady = 2, padx = .5)
     button_no = Button(window, text="Skip it and \nrun the program", bg="green", fg="white", command=run_it)
     button_no.pack(side = BOTTOM, fill = X, pady = 2, padx = .5)
     window.mainloop()
 
+def setstrip(s):
+    s = str(s)
+    s = s[2:-2]
+    s = s.replace("', '", "+")
+    return s
+
 def keystates():
-    # print('Ctrl: %d,\nAlt: %d,\nFunc: %d,\nShift: %d,\nEnter: %d,\nSpacebar: %d,\nCaps Lock: %d' % (var1.get(), var2.get(), var3.get(), var4.get(), var5.get(), var6.get(), var7.get()))
+    preview = None
+    if preview:
+        preview.destroy()
     keysts = {} 
     keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Spacebar']=var6.get() ; keysts['Caps Lock']=var7.get()
     print(keysts)
-    for key in keysts:
-        if keysts[key] == 1:
-            print(key)
-
-def keystates1():
-    keysts = {} 
-    keysts['control'] = var1.get() ; keysts['alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['shift']=var4.get() ;  keysts['enter'] = var5.get() ; keysts['space']=var6.get() ; keysts['caps_lock']=var7.get()
     keyset = set()
     for key in keysts:
         if keysts[key] == 1:
+            print(key)
             keyset.add(key)
     print(keyset)
     global keysetstring
-    keysetstring = str(keyset)
-    keysetstring = keysetstring[2:-2]
-    keysetstring = keysetstring.replace("', '", "+")
+    keysetstring = setstrip(keyset)
     keysetstring = keysetstring.strip()
     print(keysetstring)
-    
-    
+    ltr_keys = charBind.get()
+    charkeys = set()
+    for crctr in ltr_keys:
+        charkeys.add(crctr)
+    if ltr_keys != '':
+        keysetstring = keysetstring + '+' + setstrip(charkeys)
+    print(keysetstring)
+    preview = Label(window, text=keysetstring).grid(row=8, column=0)
+
 window = Tk()
 window.title("This last bit sets key binding")
-window.geometry('660x315+210+25')
+window.geometry('950x315+210+25')
 window.configure(background='#face0f')
-chkLabel = Label(window, text="Choose two or three keys you'll press at the same time to awaken the program.\nWhen you hear a call come in, hitting these keys will pick up the call and generate a greeting.\nAvoid key combos that already trigger commonly used shortcuts. For example,\nCtrl + C, or Ctrl + Alt + Del would be terrible choices!")
+chkLabel = Label(window, text="Choose two or three keys you'll press at the same time to awaken the program.\nWhen you hear a call come in, hitting these keys will pick up the call and generate a greeting.\nAvoid key combos that already trigger commonly used shortcuts. For example,\nCtrl + C, or Ctrl + Alt + Del would be terrible choices!", font=("Helvetica", 14))
 # https://pynput.readthedocs.io/en/latest/keyboard.html#pynput.keyboard.Key
 chkLabel.grid(row=0, columnspan=3)
 var1=IntVar(); var2=IntVar(); var3=IntVar(); var4=IntVar(); var5=IntVar(); var6=IntVar(); var7=IntVar()
@@ -403,8 +415,15 @@ Checkbutton(window, text='SHIFT key', variable=var4).grid(row=3, column=0)
 Checkbutton(window, text='ENTER key', variable=var5).grid(row=3, column=1)
 Checkbutton(window, text='Space bar', variable=var6).grid(row=3, column=2)
 Checkbutton(window, text='CAPS LOCK key', variable=var7).grid(row=4, column=0)
-Button(window, text='Show choices', command=keystates).grid(row=5, column=0)
-Button(window, text='Finalize choices', command=keystates1).grid(row=5, column=1)
+charBind = Entry(window)
+charLabel = Label(window, text="Choose a letter, number, or symbol key if you like")
+genlTip = Label(window, text="Tip: Use a pair of keys that are proximal, that don't move your browser (e.g., PG DN, arrow keys, and, on some keyboards, the space bar) and that don't already trigger an\naction when pressed together!")
+genlTip.grid(row=7, column=0, columnspan=3)
+charLabel.grid(row=5, column=0, columnspan=2, sticky=E)
+charBind.grid(row=5, column=2, sticky=W)
+Button(window, text='Show choices', bg='orange', command=keystates).grid(row=10, column=0)
+Button(window, text='Finalize choices', bg='lime', command=window.destroy).grid(row=10, column=1)
+preview = Label(window, text="-.-").grid(row=11, column=1)
 window.lift()
 window.mainloop()
 
