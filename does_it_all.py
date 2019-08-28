@@ -9,7 +9,7 @@ configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
 val = 'Test'   
 timenow = 'Huh'
-show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = ''
+show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = '' ; sguest = ''
 global h3Value, h33Value
 
 def write_config(x_coord, y_coord):
@@ -48,7 +48,7 @@ def main():
     
     quest = 0
     prefgreeting = ''
-    global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value, h33Value
+    global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value, h33Value, guest
     # time = ' this evening'
     cfg.read('config0.ini')
     val = cfg['greet']['libanname']
@@ -184,7 +184,7 @@ def main():
         mailAlert.mainloop()
 
 def map():
-    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue
+    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue, guest
     window = Tk()
     pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen--Step 1 of 3")
@@ -226,7 +226,7 @@ def map():
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0, h33Value
+        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0, h33Value, g1Value, sguest
         if show != '':
             show.destroy()
         if shola1 != '':    
@@ -239,9 +239,12 @@ def map():
             shola3.destroy()
         if shola4 != '':    
             shola4.destroy()
+        if sguest != '':    
+            sguest.destroy()
         h1Value=hola1inp.get("1.0","end-1c")
         h2Value=hola2inp.get("1.0","end-1c")
         h3Value=hola3inp.get("1.0","end-1c")
+        g1Value = guestinp.get("1.0", "end-1c")
         h33Value = h3Value + ' Anytown Public Library'
         h4Value=hola4inp.get("1.0","end-1c")
         timeValue = timeinp.get("1.0","end-1c")
@@ -254,11 +257,13 @@ def map():
         timenow = timeValue
         frame = Frame(window)
         frame2 = Frame(window)
-        frame.grid(row=8, columnspan=3, rowspan=1, sticky=W+E)
-        frame2.grid(row=9, columnspan=3, rowspan=1, sticky=W+E)
+        frame.grid(row=11, columnspan=3, rowspan=1, sticky=W+E)
+        frame2.grid(row=12, columnspan=3, rowspan=1, sticky=W+E)
         shola1 = Label(frame, text = val)
         shola1.configure(text=val)
         shola1.pack(side="left")
+        sguest = Label(frame, text=g1Value)
+        sguest.pack(side="left")
         show = Label(frame, text=timenow)
         show.configure(text=timenow)
         show.pack(side="left")
@@ -281,6 +286,7 @@ def map():
         changreet['hola3'] = h3Value
         changreet['hola4'] = h4Value
         changreet['libanname'] = nameValue
+        changreet['guest'] = g1Value
         with open('config0.ini', 'w') as configfile:
             cfig.write(configfile)
      
@@ -290,6 +296,7 @@ def map():
     h2 = cfig['greet']['hola2']
     h3 = cfig['greet']['hola3']
     h4 = cfig['greet']['hola4']
+    g1 = cfig['greet']['guest']
     libanname = cfig['greet']['libanname']
     thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
@@ -297,6 +304,8 @@ def map():
     window.configure(background='#c0ffee')
     hola1inp = Text(window, width=35, height = 2)
     hola1inp.insert('1.0', h1 )
+    guestinp = Text(window, width=22, height=2)
+    guestinp.insert('1.0', g1)
     hola2inp = Text(window, width=35, height = 2)
     hola2inp.insert('1.0', h2 )
     hola3inp = Text(window, width=35, height = 2)
@@ -308,15 +317,17 @@ def map():
     timeinp = Text(window, width=35, height = 2)
     timeinp.insert('1.0', thetime )
     hola1inp.grid(row=1, column=1)
-    timeinp.grid(row=2, column=1)
+    guestinp.grid(row=2, column=1)
     hola2inp.grid(row=3, column=1)
-    libaninp.grid(row=4, column=1)
-    hola3inp.grid(row=5, column=1)
+    timeinp.grid(row=4, column=1)
+    libaninp.grid(row=5, column=1)
+    hola3inp.grid(row=6, column=1)
     greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', justify=CENTER).grid(row=0, column=0, columnspan=3)
-    libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=6, column=1, pady=2)
-    hola4inp.grid(row=7, column=1)
-    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=4, column=2, sticky='W')
-    timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=2, column=2, sticky='W')
+    libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=7, column=1, pady=2)
+    hola4inp.grid(row=8, column=1)
+    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=5, column=2, sticky='W')
+    guestPrompt = Label(window, text="The caller's name, if given, goes here. What would you like to call an anon?", font=("Helvetica", 11), fg='orange', justify=LEFT).grid(row=2, column=2, sticky='W')
+    timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=4, column=2, sticky='W')
     buttonPreview=Button(window, height=1, width=17, text="Preview your greeting", bg="yellow",
                     command=grab_input)
     buttonPreview.grid(row=5, column=0)
@@ -433,9 +444,11 @@ window.configure(background='#deface')
 splainlabel = Label(window, text="Here's what will happen next:", font=("Helvetica", 17), bg='#deface', fg='blue')
 splain2 = Label(window, text="When you close this window, the program will\ncycle through the clicks you mapped, adding\none slightly lower down after the 2nd.", font=("Helvetica", 14), bg='#deface', fg='blue')
 wakelabel = Label(window, text=keysetstring, font=("Helvetica", 14), bg='#deface', fg='purple')
+wakesplain = Label(window, text="Hit these keys, together, to launch\nthe pickup cycle: When you\nhear a new call, have your QP screen up.", font=("Helvetica", 14), bg='#deface', fg='blue')
 splainlabel.grid(row=0, column=0, sticky=EW)
-wakelabel.grid(row=3, column=0, sticky=EW)
 splain2.grid(row=1, column=0, sticky=EW)
+wakelabel.grid(row=3, column=0, sticky=EW)
+wakesplain.grid(row=4, column=0, sticky=EW)
 close_it = Button(window, text="Close\nwindow", command=window.destroy)
 close_it.configure(height=4, width=8, bg='#feeb1e', relief=RAISED)  #emboss it too!
 close_it.grid(row=3, column=1)
