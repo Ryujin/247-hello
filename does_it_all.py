@@ -10,7 +10,7 @@ cfg = configparser.ConfigParser()
 val = 'Test'   
 timenow = 'Huh'
 show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = ''
-global h3Value
+global h3Value, h33Value
 
 def write_config(x_coord, y_coord):
     global configfile_name
@@ -45,11 +45,16 @@ def main():
     patlibrary = 'Stax'
     ipaddress = 'No IP shown'
     gatewayURL = 'placehold'
+    
     quest = 0
     prefgreeting = ''
-    global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value
+    global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value, h33Value
     # time = ' this evening'
-
+    cfg.read('config0.ini')
+    val = cfg['greet']['libanname']
+    timenow = cfg['greet']['timenow']
+    h33Value = cfg['greet']['hola3']
+    h3Value = cfg['greet']['hola2']
     offer = 'I\'ll try to help you with that! This will take a few minutes.'
             
     def pickup() :
@@ -68,8 +73,8 @@ def main():
 
     def grab_deets() :
         global xpu, ypu
-        pyautogui.moveTo(int(xpu), int(ypu)*1.5)       # 23, 421 yari2*2.17   #LOOK CAREFULLY AT THIS; CUT
-        pyautogui.PAUSE = 2.7     #how long does patron take to load?      
+        pyautogui.moveTo(int(xpu), int(ypu)*2.2)       # 23, 421 yari2*2.17   #LOOK CAREFULLY AT THIS; CUT
+        pyautogui.PAUSE = 2.7     
         pyautogui.click()
         pyautogui.PAUSE = .1     #need to be on the new patron, and Info tab
         pyautogui.hotkey('ctrl', 'a')    #(possibly not automatable...)
@@ -160,7 +165,8 @@ def main():
     #cfg.read('config.ini')
    # patname = cfg['name']['x']
   #  greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
-    greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you " + timenow + ". " + val + " " + patlibraryX + " colleagues while they're busy with other things. " + offer)
+    print(type(val)) ; print(type(timenow)) ; print(type(h3Value)) ; print(type(patname)) ; print(type(timenow))
+    greeting = (prefgreeting + val + timenow + patname + timenow + ". " + val + " " + h33Value + patlibraryX + " colleagues while they're busy with other things. " + offer)
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
@@ -220,7 +226,7 @@ def map():
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0
+        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0, h33Value
         if show != '':
             show.destroy()
         if shola1 != '':    
@@ -253,26 +259,18 @@ def map():
         shola1 = Label(frame, text = val)
         shola1.configure(text=val)
         shola1.pack(side="left")
-        #shola1.grid(row=0, column=0)
         show = Label(frame, text=timenow)
         show.configure(text=timenow)
         show.pack(side="left")
         shola2 = Label(frame, text = h2Value)
         shola2.configure(text=h2Value)
         shola2.pack(side="left")
-        #shola2.grid(row=0, column=2)
         liban = Label(frame, text = nameValue)
-        #liban.configure(text = nameValue)
         liban.pack(side="left")
-        #liban.grid(row=0, column = 3)
         shola3 = Label(frame2, text = h33Value)
-        #shola3.configure(text=h3Value)
         shola3.pack(side="left")
-        #shola3.grid(row=1, column=0)
         shola4 = Label(frame2, text = h4Value)
-        #shola4.configure(text=h4Value)
         shola4.pack(side="left")
-        #shola4.grid(row=1, column=1)
         print('val is ' + val)
         print ('time is ' + timenow + ' inside the grab function.')
         cfig = configparser.ConfigParser()
@@ -295,7 +293,7 @@ def map():
     libanname = cfig['greet']['libanname']
     thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
-    window.geometry('660x350+220+25')
+    window.geometry('730x350+220+25')
     window.configure(background='#c0ffee')
     hola1inp = Text(window, width=35, height = 2)
     hola1inp.insert('1.0', h1 )
@@ -324,7 +322,6 @@ def map():
     buttonPreview.grid(row=5, column=0)
     buttonCommit = Button(window, height=1, width=17, text="Looks good!", bg="lime", fg="black", command=stroy)
     buttonCommit.grid(row=10, column=1)
-    #print('And now, h33Value is ' + h33Value)
     window.mainloop()
     
     
@@ -379,7 +376,7 @@ def keystates():
     if preview:
         preview.destroy()
     keysts = {} 
-    keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Spacebar']=var6.get() ; keysts['Caps Lock']=var7.get()
+    keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Home']=var6.get() ; keysts['Caps Lock']=var7.get()
     print(keysts)
     keyset = set()
     for key in keysts:
@@ -396,15 +393,17 @@ def keystates():
     for crctr in ltr_keys:
         charkeys.add(crctr)
     if ltr_keys != '':
-        keysetstring = keysetstring + '+' + setstrip(charkeys)
+        charkeys = setstrip(charkeys)
+        charkeys = charkeys.upper()
+        keysetstring = keysetstring + '+' + charkeys
     print(keysetstring)
-    preview = Label(window, text=keysetstring).grid(row=8, column=0)
-
+    preview = Label(window, text=keysetstring, fg="red", font=('Helvetica', 12, 'bold')).grid(row=8, column=0)
+    
 window = Tk()
 window.title("This last bit sets key binding")
 window.geometry('950x315+210+25')
 window.configure(background='#face0f')
-chkLabel = Label(window, text="Choose two or three keys you'll press at the same time to awaken the program.\nWhen you hear a call come in, hitting these keys will pick up the call and generate a greeting.\nAvoid key combos that already trigger commonly used shortcuts. For example,\nCtrl + C, or Ctrl + Alt + Del would be terrible choices!", font=("Helvetica", 14))
+chkLabel = Label(window, text="Choose two or three keys you'll press at the same time to awaken the program.\nWhen you hear a call come in, hitting these keys together will grab the call and generate\na greeting. Avoid key combos that already trigger commonly used shortcuts.\nFor example, Ctrl + P, or Ctrl + Alt + Del would be bad choices!", font=("Helvetica", 14))
 # https://pynput.readthedocs.io/en/latest/keyboard.html#pynput.keyboard.Key
 chkLabel.grid(row=0, columnspan=3)
 var1=IntVar(); var2=IntVar(); var3=IntVar(); var4=IntVar(); var5=IntVar(); var6=IntVar(); var7=IntVar()
@@ -413,22 +412,39 @@ Checkbutton(window, text='ALT key', variable=var2).grid(row=2, column=1)
 Checkbutton(window, text='FN key', variable=var3).grid(row=2, column=2)
 Checkbutton(window, text='SHIFT key', variable=var4).grid(row=3, column=0)
 Checkbutton(window, text='ENTER key', variable=var5).grid(row=3, column=1)
-Checkbutton(window, text='Space bar', variable=var6).grid(row=3, column=2)
+Checkbutton(window, text='HOME key', variable=var6).grid(row=3, column=2)
 Checkbutton(window, text='CAPS LOCK key', variable=var7).grid(row=4, column=0)
 charBind = Entry(window)
-charLabel = Label(window, text="Choose a letter, number, or symbol key if you like")
-genlTip = Label(window, text="Tip: Use a pair of keys that are proximal, that don't move your browser (e.g., PG DN, arrow keys, and, on some keyboards, the space bar) and that don't already trigger an\naction when pressed together!")
+charLabel = Label(window, text="Choose letter, number, or symbol keys if you like")
+genlTip = Label(window, text="Tip: Use a pair of neighboring keys, and don't include combos that already trigger an\naction when pressed together!")
 genlTip.grid(row=7, column=0, columnspan=3)
 charLabel.grid(row=5, column=0, columnspan=2, sticky=E)
 charBind.grid(row=5, column=2, sticky=W)
 Button(window, text='Show choices', bg='orange', command=keystates).grid(row=10, column=0)
 Button(window, text='Finalize choices', bg='lime', command=window.destroy).grid(row=10, column=1)
-preview = Label(window, text="-.-").grid(row=11, column=1)
+# ADD A try/except to prevent empty~no choice situations
 window.lift()
 window.mainloop()
 
+window = Tk()
+window.title("Here's what happens next")
+window.geometry('650x315+210+25')
+window.configure(background='#deface')
+splainlabel = Label(window, text="Here's what will happen next:", font=("Helvetica", 17), bg='#deface', fg='blue')
+splain2 = Label(window, text="When you close this window, the program will\ncycle through the clicks you mapped, adding\none slightly lower down after the 2nd.", font=("Helvetica", 14), bg='#deface', fg='blue')
+wakelabel = Label(window, text=keysetstring, font=("Helvetica", 14), bg='#deface', fg='purple')
+splainlabel.grid(row=0, column=0, sticky=EW)
+wakelabel.grid(row=3, column=0, sticky=EW)
+splain2.grid(row=1, column=0, sticky=EW)
+close_it = Button(window, text="Close\nwindow", command=window.destroy)
+close_it.configure(height=4, width=8, bg='#feeb1e', relief=RAISED)  #emboss it too!
+close_it.grid(row=3, column=1)
+window.lift()
+window.mainloop()
+# user needs to be able to close, restart program somehow (not from CLI)
+keysetstring = keysetstring.lower()
+
 if __name__ == "__main__":
     main()
-#keyboard.add_hotkey('enter+control', main)
 keyboard.add_hotkey(keysetstring, main)
 keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
