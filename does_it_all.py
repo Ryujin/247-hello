@@ -7,7 +7,6 @@ from pynput.mouse import Listener
 from tkinter import *
 configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
-val = 'Test'   
 timenow = 'Huh'
 show = '' ; shola1 = '' ; shola2 = ''; shola3 = ''; shola4 = '' ; liban = '' ; sguest = ''
 global h3Value, h33Value
@@ -49,13 +48,16 @@ def main():
     quest = 0
     prefgreeting = ''
     global timenow, show, shola1, shola2, shola3, shola4, liban, nameValue, h1Value, h2Value, h3Value, h4Value, h33Value, guest
-    # time = ' this evening'
     cfg.read('config0.ini')
-    val = cfg['greet']['libanname']
+    Nameval = cfg['greet']['libanname']
     timenow = cfg['greet']['timenow']
+    h1Value = cfg['greet']['hola1']
+    h2Value = cfg['greet']['hola2']
     h33Value = cfg['greet']['hola3']
-    h3Value = cfg['greet']['hola2']
-    offer = 'I\'ll try to help you with that! This will take a few minutes.'
+    h4Value = cfg['greet']['hola4']
+    patname = cfg['greet']['guest']   #this will cause problems, below, where 'friend' was assumed, when name IS known
+    patnameanon = patname
+    offer = 'I\'ll try to help you with that! This will take a few minutes.'  #THIS IS OBSOLETE
             
     def pickup() :
         global xari2, yari2, xari0, yari0
@@ -131,7 +133,7 @@ def main():
             if 'UK' in words :
                timenow = '' 
         if words[0] == 'Patron:' :
-            if patname == 'friend' and words[1] != 'anonymous':
+            if patname == patnameanon and words[1] != 'anonymous':
                 patname = words[1]
             patmail = words[-1]
             if patmail == 'provided' :
@@ -145,7 +147,7 @@ def main():
             offer = 'What can I help you with?'
             continue
     patname = patname.capitalize()
-    if patname == 'Library' : patname = 'friend'
+    if patname == 'Library' : patname = patnameanon
     if patmail == 'rovided' : patmail = 'They gave us no address'
     patlibraryX = '' 
     for kotoba in patlibrary:
@@ -165,8 +167,7 @@ def main():
     #cfg.read('config.ini')
    # patname = cfg['name']['x']
   #  greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
-    print(type(val)) ; print(type(timenow)) ; print(type(h3Value)) ; print(type(patname)) ; print(type(timenow))
-    greeting = (prefgreeting + val + timenow + patname + timenow + ". " + val + " " + h33Value + patlibraryX + " colleagues while they're busy with other things. " + offer)
+    greeting = (h1Value  + " " + patname + h2Value + prefgreeting  + " " + timenow + " " + Nameval + " " + h33Value  + " " + patlibraryX + " " + h4Value)
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
@@ -184,7 +185,7 @@ def main():
         mailAlert.mainloop()
 
 def map():
-    global window, listener, val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue, guest
+    global window, listener, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue, guest
     window = Tk()
     pic = PhotoImage(file="tabsG.gif")
     window.title("Map your screen--Step 1 of 3")
@@ -207,7 +208,7 @@ def map():
     window.configure(background='pink')
     window.lift()
     lblPic2 = Label(window, image=pic2).pack(side="left")
-    lbl = Label(window, justify=RIGHT, text="Now, click just\nbelow the blue bar", font=("Helvetica", 14)).pack(side='left')
+    lbl = Label(window, justify=LEFT, text="Now, click just\nbelow the blue bar", font=("Helvetica", 14)).pack(side='left')
     with Listener(on_click=on_click) as listener:
         window.mainloop()
         listener.join()
@@ -226,7 +227,7 @@ def map():
         window.mainloop()
     window = Tk()
     def grab_input():
-        global val, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0, h33Value, g1Value, sguest
+        global Nameval, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value0, h33Value, g1Value, sguest
         if show != '':
             show.destroy()
         if shola1 != '':    
@@ -253,35 +254,33 @@ def map():
         h4Value = h4Value.lstrip()
         h2Value = h2Value.lstrip()
 
-        val = h1Value
         timenow = timeValue
         frame = Frame(window)
         frame2 = Frame(window)
         frame.grid(row=11, columnspan=3, rowspan=1, sticky=W+E)
         frame2.grid(row=12, columnspan=3, rowspan=1, sticky=W+E)
-        shola1 = Label(frame, text = val)
-        shola1.configure(text=val)
+        shola1 = Label(frame, text = h1Value)
         shola1.pack(side="left")
         sguest = Label(frame, text=g1Value)
         sguest.pack(side="left")
-        show = Label(frame, text=timenow)
-        show.configure(text=timenow)
-        show.pack(side="left")
         shola2 = Label(frame, text = h2Value)
         shola2.configure(text=h2Value)
         shola2.pack(side="left")
+        show = Label(frame, text=timenow)
+        show.configure(text=timenow)
+        show.pack(side="left")
         liban = Label(frame, text = nameValue)
         liban.pack(side="left")
         shola3 = Label(frame2, text = h33Value)
         shola3.pack(side="left")
         shola4 = Label(frame2, text = h4Value)
         shola4.pack(side="left")
-        print('val is ' + val)
         print ('time is ' + timenow + ' inside the grab function.')
         cfig = configparser.ConfigParser()
         cfig.read('config0.ini')
         changreet = cfig['greet']
         changreet['timenow'] = timenow
+        changreet['hola1'] = h1Value
         changreet['hola2'] = h2Value
         changreet['hola3'] = h3Value
         changreet['hola4'] = h4Value
@@ -300,7 +299,7 @@ def map():
     libanname = cfig['greet']['libanname']
     thetime = cfig['greet']['timenow']
     window.title("Now, make up a greeting and, if you like, specify the time")
-    window.geometry('730x350+220+25')
+    window.geometry('730x370+220+25')
     window.configure(background='#c0ffee')
     hola1inp = Text(window, width=35, height = 2)
     hola1inp.insert('1.0', h1 )
@@ -326,7 +325,7 @@ def map():
     libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=7, column=1, pady=2)
     hola4inp.grid(row=8, column=1)
     namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=5, column=2, sticky='W')
-    guestPrompt = Label(window, text="The caller's name, if given, goes here. What would you like to call an anon?", font=("Helvetica", 11), fg='orange', justify=LEFT).grid(row=2, column=2, sticky='W')
+    guestPrompt = Label(window, text="The caller's name, if given, goes\nhere. What would you like to call an anon?", font=("Helvetica", 9), fg='orange', justify=LEFT).grid(row=2, column=2, sticky='W')
     timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=4, column=2, sticky='W')
     buttonPreview=Button(window, height=1, width=17, text="Preview your greeting", bg="yellow",
                     command=grab_input)
@@ -387,7 +386,7 @@ def keystates():
     if preview:
         preview.destroy()
     keysts = {} 
-    keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Fun'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Home']=var6.get() ; keysts['Caps Lock']=var7.get()
+    keysts['Ctrl'] = var1.get() ; keysts['Alt']=var2.get() ;  keysts['Up'] = var3.get() ; keysts['Shift']=var4.get() ;  keysts['Enter'] = var5.get() ; keysts['Home']=var6.get() ; keysts['Caps Lock']=var7.get()
     print(keysts)
     keyset = set()
     for key in keysts:
@@ -420,7 +419,7 @@ chkLabel.grid(row=0, columnspan=3)
 var1=IntVar(); var2=IntVar(); var3=IntVar(); var4=IntVar(); var5=IntVar(); var6=IntVar(); var7=IntVar()
 Checkbutton(window, text='CTRL key', variable=var1).grid(row=2, column=0)
 Checkbutton(window, text='ALT key', variable=var2).grid(row=2, column=1)
-Checkbutton(window, text='FN key', variable=var3).grid(row=2, column=2)
+Checkbutton(window, text='UP ARROW key', variable=var3).grid(row=2, column=2)
 Checkbutton(window, text='SHIFT key', variable=var4).grid(row=3, column=0)
 Checkbutton(window, text='ENTER key', variable=var5).grid(row=3, column=1)
 Checkbutton(window, text='HOME key', variable=var6).grid(row=3, column=2)
@@ -442,7 +441,7 @@ window.title("Here's what happens next")
 window.geometry('650x315+210+25')
 window.configure(background='#deface')
 splainlabel = Label(window, text="Here's what will happen next:", font=("Helvetica", 17), bg='#deface', fg='blue')
-splain2 = Label(window, text="When you close this window, the program will\ncycle through the clicks you mapped, adding\none slightly lower down after the 2nd.", font=("Helvetica", 14), bg='#deface', fg='blue')
+splain2 = Label(window, text="When you close this window, the program will\ncycle through the clicks you mapped, plus\none slightly lower down after the 2nd, with brief time\nintervals between the clicks.", font=("Helvetica", 14), bg='#deface', fg='blue')
 wakelabel = Label(window, text=keysetstring, font=("Helvetica", 14), bg='#deface', fg='purple')
 wakesplain = Label(window, text="Hit these keys, together, to launch\nthe pickup cycle: When you\nhear a new call, have your QP screen up.", font=("Helvetica", 14), bg='#deface', fg='blue')
 splainlabel.grid(row=0, column=0, sticky=EW)
