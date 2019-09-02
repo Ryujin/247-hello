@@ -1,4 +1,4 @@
-import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os
+import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os, sys
 
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
@@ -79,7 +79,7 @@ def main():
         pyautogui.PAUSE = 2.7     
         pyautogui.click()
         pyautogui.PAUSE = .1     #need to be on the new patron, and Info tab
-        pyautogui.hotkey('ctrl', 'a')    #(possibly not automatable...)
+        pyautogui.hotkey('ctrl', 'a')     
         pyautogui.hotkey('ctrl', 'c')
         s = pyperclip.paste()
         return s
@@ -146,7 +146,7 @@ def main():
         if iznta_question() :
             offer = 'What can I help you with?'
             continue
-    patname = patname.capitalize()
+    if patname != patnameanon : patname = patname.capitalize()
     if patname == 'Library' : patname = patnameanon
     if patmail == 'rovided' : patmail = 'They gave us no address'
     patlibraryX = '' 
@@ -164,9 +164,6 @@ def main():
             patlibraryX = titlecase(patlibraryX)
     patlibraryX = patlibraryX.lstrip()
     addAsk = emailask()
-    #cfg.read('config.ini')
-   # patname = cfg['name']['x']
-  #  greeting = (prefgreeting + "Hello, " + patname + ", and welcome! It's great to be able to serve you" + time + ". I'm Bruce, part of a network of librarians assisting our " + patlibraryX + " colleagues while they're busy with other things. " + offer)
     greeting = (h1Value  + " " + patname + h2Value + prefgreeting  + " " + timenow + " " + Nameval + " " + h33Value  + " " + patlibraryX + " " + h4Value)
     pyperclip.copy(greeting)
     log_stuff(greeting)
@@ -275,7 +272,6 @@ def map():
         shola3.pack(side="left")
         shola4 = Label(frame2, text = h4Value)
         shola4.pack(side="left")
-        print ('time is ' + timenow + ' inside the grab function.')
         cfig = configparser.ConfigParser()
         cfig.read('config0.ini')
         changreet = cfig['greet']
@@ -324,8 +320,8 @@ def map():
     greetHeading = Label(window, text="Here, you craft a greeting", font=("Helvetica", 17), fg='red', justify=CENTER).grid(row=0, column=0, columnspan=3)
     libHolder=Label(window, text="Somewheresville Public or Academic Library", font=("Consolas", 9)).grid(row=7, column=1, pady=2)
     hola4inp.grid(row=8, column=1)
-    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', justify=LEFT).grid(row=5, column=2, sticky='W')
-    guestPrompt = Label(window, text="The caller's name, if given, goes\nhere. What would you like to call an anon?", font=("Helvetica", 9), fg='orange', justify=LEFT).grid(row=2, column=2, sticky='W')
+    namePrompt = Label(window, text="Your screen name", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=5, column=2, sticky='W')
+    guestPrompt = Label(window, text="The caller's name, if given, goes\nhere. What would you like to call an anon?", font=("Helvetica", 9), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=2, column=2, sticky='W')
     timePrompt = Label(window, text="Time of day, if you like", font=("Helvetica", 15), fg='orange', bg='#c0ffee', justify=LEFT).grid(row=4, column=2, sticky='W')
     buttonPreview=Button(window, height=1, width=17, text="Preview your greeting", bg="yellow",
                     command=grab_input)
@@ -408,6 +404,7 @@ def keystates():
         keysetstring = keysetstring + '+' + charkeys
     print(keysetstring)
     preview = Label(window, text=keysetstring, fg="red", font=('Helvetica', 12, 'bold')).grid(row=8, column=0)
+    Button(window, text='Finalize choices', bg='lime', command=window.destroy).grid(row=10, column=1)
     
 window = Tk()
 window.title("This last bit sets key binding")
@@ -431,7 +428,7 @@ genlTip.grid(row=7, column=0, columnspan=3)
 charLabel.grid(row=5, column=0, columnspan=2, sticky=E)
 charBind.grid(row=5, column=2, sticky=W)
 Button(window, text='Show choices', bg='orange', command=keystates).grid(row=10, column=0)
-Button(window, text='Finalize choices', bg='lime', command=window.destroy).grid(row=10, column=1)
+#Button(window, text='Finalize choices', bg='lime', command=window.destroy).grid(row=10, column=1)
 # ADD A try/except to prevent empty~no choice situations
 window.lift()
 window.mainloop()
@@ -454,9 +451,25 @@ close_it.grid(row=3, column=1)
 window.lift()
 window.mainloop()
 # user needs to be able to close, restart program somehow (not from CLI)
+#import the sys module and use sys.exit()  -- alternatively, Python has a quit() function built in
+#possibly they both work?
 keysetstring = keysetstring.lower()
+
+def killit():
+    print("Shutting down!")
+    window = Tk()
+    window.title("Exiting the program")
+    window.geometry('500x120+240+30')
+    window.configure(background = '#f00dee')
+    lastlabel = Label(window, text="Exiting...", font=("Helvetica", 28), bg='#f00dee', fg='red').pack()
+    window.lift()
+    window.after(2300, window.destroy)
+    window.mainloop()
+    time.sleep(3.5)
+    sys.exit()
 
 if __name__ == "__main__":
     main()
 keyboard.add_hotkey(keysetstring, main)
+keyboard.add_hotkey('alt+shift+x', killit)
 keyboard.wait()     #keeps the script alive & ready for the keystrokes in line above
