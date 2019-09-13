@@ -1,5 +1,6 @@
 import pyperclip, re, string, keyboard, time, pyautogui, webbrowser, titlecaseMod, pynput, threading, tkinter, configparser, os, sys
-
+# Want to have IP lookup/scrape at the ready; auto-click to open P-Page (calc.); calc. and click when 'Already p/u'
+# Almost AOTA depends on a screen size probe: ws = window.winfo_screenwidth()
 text = pyperclip.paste()
 pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
@@ -42,7 +43,7 @@ def main():
     patname = 'friend'
     patmail = 'Zero'
     patlibrary = 'Stax'
-    ipaddress = 'No IP shown'
+    ip_address = 'No IP shown'
     gatewayURL = 'placehold'
     
     quest = 0
@@ -94,7 +95,7 @@ def main():
         alist = x.split('\n')
         del alist[0:10] 
         return alist
-
+#The below needs to work with non-Qwidget calls too !!!
     def iznta_question() :
         if 'Qwidget:' in words :
             qwposi = words.index('Qwidget:')
@@ -131,7 +132,10 @@ def main():
             patname = words[1]  #ASHFORD. KICK IN TO A DIFFT FUNCTION!  
         if words[0] == 'Queue:' :
             if 'UK' in words :
-               timenow = '' 
+               timenow = ''
+        if words[0] == "IP" :
+            ip_address = words[2]
+            print(words[2])
         if words[0] == 'Patron:' :
             if patname == patnameanon and words[1] != 'anonymous':
                 patname = words[1]
@@ -168,6 +172,7 @@ def main():
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
+    # Here is where we click to open the Policy Page (optional setting in config file): Guess sector based on screen width
     print(greeting)
     if addAsk != '' :
         pyperclip.copy(addAsk)
@@ -180,7 +185,17 @@ def main():
         mailAlert.deiconify()
         mailAlert.after(8500, mailAlert.destroy)
         mailAlert.mainloop()
-
+    if ip_address != 'No IP shown' :
+        print(ip_address)  #Here is where we invoke a func. to call the ip2location page & scrape it for city
+        patrocation = Tk()  #(Doing so can depend on a binary switch in the config file?)
+        patrocation.title("Caller's location")
+        patrocation.geometry('350x120+50+50')
+        cation_lbl = Label(patrocation, text = ip_address)
+        cation_lbl.pack(anchor='n')
+        patrocation.lift()
+        patrocation.deiconify()
+        patrocation.after(5000, patrocation.destroy)
+        patrocation.mainloop()
 def map():
     global window, listener, timenow, show, shola1, shola2, shola3, shola4, liban, h3Value, h2Value, h1Value, h4Value, nameValue, guest
     window = Tk()
