@@ -6,6 +6,11 @@ pyautogui.FAILSAFE = True
 from titlecaseMod import titlecase
 from pynput.mouse import Listener
 from tkinter import *
+root = Tk()
+screen_wide = root.winfo_screenwidth()
+screen_high = root.winfo_screenheight()
+print(str(screen_wide) + " " + str(screen_high))
+root.destroy()
 configfile_name = "config.ini"
 cfg = configparser.ConfigParser()
 timenow = 'Huh'
@@ -125,7 +130,8 @@ def main():
         words = lines.split()
         if len(words) == 0 : continue
         if  words[0] == 'Close' : 
-            pyautogui.moveTo(870, 210) #Closes the 'Already p/u' dialog #USE MATH to adapt this one!!!
+            #pyautogui.moveTo(870, 210) #Closes the 'Already p/u' dialog #1366 x .636896 / 768 x .2734375 screen  Is it really this far right?
+            pyautogui.moveTo((screen_wide * .636896), (screen_high * .2734375)) #Closes the 'Already p/u' dialog #1366 x .636896 / 768 x .2734375 screen
             pyautogui.click()
             return    #stops script upon 'Already p/u' message
         if words[0] == 'Name:' :
@@ -172,7 +178,13 @@ def main():
     pyperclip.copy(greeting)
     log_stuff(greeting)
     pastegreeting()
-    # Here is where we click to open the Policy Page (optional setting in config file): Guess sector based on screen width
+    pyautogui.moveTo((screen_wide * .9773), (screen_high * .666667))
+    pyautogui.click()
+    # Here is where we click to open the Policy Page (optional setting in config file): 1335, 512 Guess sector based on screen width
+    # Formula based on width of screen makes sense: 1365 is this one; 767 is height add one
+    # So, the y coord is two-thirds 2/3 of total height and x coord is .978 of total width .9773
+    # Difference of 40, b/n tab and pickup -- so 12.8 times diff there
+    # Also look at Line 128 !
     print(greeting)
     if addAsk != '' :
         pyperclip.copy(addAsk)
